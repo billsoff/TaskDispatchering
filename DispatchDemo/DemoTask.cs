@@ -6,10 +6,6 @@ namespace DispatchDemo
     {
         public string Name { get; } = name;
 
-        public string Command => string.Empty;
-
-        public string Parameter => string.Empty;
-
         public event EventHandler<TaskStartingEventArgs> Starting;
         public event EventHandler<TaskReportStatusEventArgs> ReportStatus;
         public event EventHandler<TaskCompletedEventArgs> Completed;
@@ -31,6 +27,30 @@ namespace DispatchDemo
             Completed?.Invoke(this, new TaskCompletedEventArgs(MinashiDateTime.Now));
         }
 
-        public SchedulerTask ToSchedulerTask(TimeSpan delay = default) => new SchedulerTask(this, delay);
+        public SchedulerTask ToSchedulerTask(TimeSpan delay = default) => new(this, delay);
+
+        public static TaskDispatcher Create() =>
+            /*
+            ＜DataRow>
+              <param localPath="A" No="1" Go="true" startTime="" />
+              <param localPath="B" No="2" Go="false" startTime="13:00:00"/>
+              <param localPath="C" No="3" Go="true" startTime=""/>
+              <param localPath="D" No="4" Go="true" startTime=""/>
+              <param localPath="E" No="5" Go="true" interTime="00:00:10" times=2/>
+            </DataRow>
+            */
+            new()
+            {
+                Sequential = new SequentialDispatcher([
+                        new DemoTask("A", 3).ToSchedulerTask(),
+                        new DemoTask("C", 5).ToSchedulerTask(),
+                        new DemoTask("D", 7).ToSchedulerTask(),
+                        new DemoTask("E", 9).ToSchedulerTask(),
+                        new DemoTask("E", 9).ToSchedulerTask(TimeSpan.FromSeconds(10)),
+                   ]),
+                Parallel = new ParallelDispatcher([
+                        new DemoTask("B", 8).ToSchedulerTask(delay: DateTime.Today + new TimeSpan(13, 0, 0) - MinashiDateTime.Now),
+                    ]),
+            };
     }
 }

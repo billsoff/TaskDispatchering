@@ -20,14 +20,14 @@ MinashiDateTime.Offset = now - DateTime.Now;
 TaskDispatcher dispatcher = new()
 {
     Sequential = new SequentialDispatcher([
-            new DemoTask("A", 3).ToSchedulerTask(),
-            new DemoTask("C", 5).ToSchedulerTask(),
-            new DemoTask("D", 7).ToSchedulerTask(),
-            new DemoTask("E", 9).ToSchedulerTask(),
-            new DemoTask("E", 9).ToSchedulerTask(TimeSpan.FromSeconds(10)),
+            new ProcessTask("A", 2).ToSchedulerTask(),
+            new ProcessTask("C", 3).ToSchedulerTask(),
+            new ProcessTask("D", 4).ToSchedulerTask(),
+            new ProcessTask("E", 5).ToSchedulerTask(),
+            new ProcessTask("E", 5).ToSchedulerTask(TimeSpan.FromSeconds(10)),
        ]),
     Parallel = new ParallelDispatcher([
-            new DemoTask("B", 8).ToSchedulerTask(DateTime.Today + new TimeSpan(13, 0, 0) - MinashiDateTime.Now),
+            new ProcessTask("B", 6, throwError: true).ToSchedulerTask(delay: DateTime.Today + new TimeSpan(13, 0, 0) - MinashiDateTime.Now),
         ]),
 };
 

@@ -4,10 +4,6 @@
     {
         string Name { get; }
 
-        string Command { get; }
-
-        string Parameter { get; }
-
         void Execute();
 
         Task ExecuteAsync() => Task.Run(Execute);
