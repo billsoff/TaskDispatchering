@@ -12,12 +12,13 @@ internal sealed class SendSessionChannel(
 {
     public async Task SendMessage(string message)
     {
-        Stream.Seek(0, SeekOrigin.Begin);
         Mutex.WaitOne();
+        Stream.Seek(0, SeekOrigin.Begin);
 
         try
         {
             int byteCount = Encoding.GetByteCount(message);
+
             SetContentLength(byteCount);
             await DoSendMessage(message);
         }
