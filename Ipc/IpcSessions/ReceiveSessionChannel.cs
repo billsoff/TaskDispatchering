@@ -2,20 +2,28 @@
 
 namespace IpcSessions;
 
-internal sealed class ReceiveSessionChannel(
-        MemoryMappedFile mappedFile,
-        Mutex mutex,
-        string fromProcess,
-        string toProcess,
-        int sessionSize,
-        int pollingMilliseconds
-    ) : SessionChannel(mappedFile, mutex, fromProcess, toProcess, sessionSize)
+internal sealed class ReceiveSessionChannel : SessionChannel
 {
+    private readonly int _pollingMilliseconds;
     private readonly CancellationTokenSource _cancellationTokenSource = new();
+    private readonly Task _pollingTask;
+
+    public ReceiveSessionChannel(
+            MemoryMappedFile mappedFile,
+            Mutex mutex,
+            string fromProcess,
+            string toProcess,
+            int sessionSize,
+            int pollingMilliseconds
+        ) : base(mappedFile, mutex, fromProcess, toProcess, sessionSize)
+    {
+        _pollingMilliseconds = pollingMilliseconds;
+        _pollingTask = StartPollingAsync();
+    }
 
     public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
-    public async Task StartPollingAsync()
+    private async Task StartPollingAsync()
     {
         CancellationToken token = _cancellationTokenSource.Token;
 
@@ -28,7 +36,7 @@ internal sealed class ReceiveSessionChannel(
 
             if (!HasContent())
             {
-                await Task.Delay(pollingMilliseconds);
+                await Task.Delay(_pollingMilliseconds);
 
                 continue;
             }
@@ -49,8 +57,9 @@ internal sealed class ReceiveSessionChannel(
         }
     }
 
-    public void EndPolling()
+    public async Task Close()
     {
         _cancellationTokenSource.Cancel();
+        await _pollingTask;
     }
 }

@@ -43,7 +43,6 @@ public sealed class IpcSession
                     RECEIVE_POLLING_MILLISECONDS
                 );
             _sessionCreateRequest.MessageReceived += OnSessionCreateRequestMessageReceived;
-            _ = _sessionCreateRequest.StartPollingAsync();
         }
     }
 
@@ -110,7 +109,6 @@ public sealed class IpcSession
         _receiveSessions.Add(connectedProcessName, receiveSession);
 
         receiveSession.MessageReceived += OnReceiveSessionMessageReceived;
-        _ = receiveSession.StartPollingAsync();
 
         SessionCreateRequestMessage message = new(ProcessName, connectedProcessName)
         {
@@ -170,7 +168,6 @@ public sealed class IpcSession
         _sendSessions.Add(message.From, sendSession);
         _receiveSessions.Add(message.From, receiveSession);
 
-        _ = receiveSession.StartPollingAsync();
         receiveSession.MessageReceived += OnReceiveSessionMessageReceived;
 
         SessionCreated?.Invoke(this, new SessionCreatedEventArgs(message));
