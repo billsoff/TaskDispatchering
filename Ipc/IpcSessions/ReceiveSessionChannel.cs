@@ -28,7 +28,6 @@ internal sealed class ReceiveSessionChannel(
 
             if (!HasContent())
             {
-                //Console.WriteLine("Wait next polling to {0}...", FromProcess);
                 await Task.Delay(pollingMilliseconds);
 
                 continue;
