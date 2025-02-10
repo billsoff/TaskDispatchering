@@ -3,35 +3,41 @@
   类`IpcSession`用于建立会话，收/发消息
   1. 构造
     <br />1.1 服务端构造
-      ```c#
+  1. 
+  1. ```c#
         IpcSession session = new(processName: "A", canBeConnected: true);
       ```
 
 <br />
 &nbsp;&nbsp;&nbsp;&nbsp;1.2 客户端构造
+
       ```c#
         IpcSession session = new(processName: "B");
       ```
 
   2. 建立会话，由客户端发起
+
     ```c#
-    await session.CreateSessionAsync("A");
+      await session.CreateSessionAsync("A");
     ```
 
   3. 如果会话成功建立，服务端会发生`SessionCreated`事件
     
   4. 发送消息时，调用方法`SendMessageAsync`来实现
+
     ```c#
       await session.SendMessageAsync(text, connectedProcessName);
     ```
 
   5. 接受消息通过事件`TextMessageReceived`来实现
     <br />5.1 事件订阅
+
       ```c#
         session.TextMessageReceived += OnTextMessageReceived;
       ```
 
     <br />5.2 接受消息
+
       ```c#
           static void OnTextMessageReceived(object sender, TextMessageReceivedEventArgs e)
           {
