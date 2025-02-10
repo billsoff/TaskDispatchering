@@ -8,6 +8,7 @@ IpcSession session = new("A", canBeConnected: true);
 CancellationTokenSource tokenSource = new();
 
 string connectedProcessName = null;
+bool sessionClosed = false;
 
 session.SessionCreated += OnSessionCreated;
 session.SessionClosed += OnSessionClosed;
@@ -33,6 +34,11 @@ Task StartSessionAsync(CancellationToken token) =>
         while (true)
         {
             string text = ReadLine();
+
+            if (sessionClosed)
+            {
+                break;
+            }
 
             if (string.Equals(text, "exit", StringComparison.OrdinalIgnoreCase))
             {
@@ -63,6 +69,7 @@ void OnSessionCreated(object sender, SessionCreatedEventArgs e)
 void OnSessionClosed(object sender, SessionClosedEventArgs e)
 {
     tokenSource.Cancel();
+    sessionClosed = true;
 
     WriteLine("Session with {0} closed ({1:HH:mm:ss}).", e.Message.From, e.Message.Timestamp);
     WriteLine();
