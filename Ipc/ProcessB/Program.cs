@@ -13,7 +13,7 @@ session.TextMessageReceived += OnTextMessageReceived;
 WriteLine("{0} is ready.", session.ProcessName);
 WriteLine();
 
-await session.CreateSessionAsync(connectedProcessName);
+session.CreateSession(connectedProcessName);
 
 WriteLine("Start session with {0} (enter bye when you want to end session)...", connectedProcessName);
 WriteLine();
@@ -39,7 +39,7 @@ while (true)
         continue;
     }
 
-    await session.SendMessageAsync(text, connectedProcessName);
+    session.SendMessage(text, connectedProcessName);
 }
 
 

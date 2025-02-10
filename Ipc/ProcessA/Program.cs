@@ -36,7 +36,7 @@ while (true)
         continue;
     }
 
-    await session.SendMessageAsync(text, connectedProcessName);
+    session.SendMessage(text, connectedProcessName);
 }
 
 
@@ -46,6 +46,7 @@ void OnSessionCreated(object sender, SessionCreatedEventArgs e)
     WriteLine();
 
     WriteLine("Start session with {0} (enter bye when you want to end session)...", e.Message.From);
+    WriteLine();
 
     connectedProcessName = e.Message.From;
 }

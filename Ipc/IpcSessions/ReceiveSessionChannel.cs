@@ -13,9 +13,8 @@ internal sealed class ReceiveSessionChannel : SessionChannel
             Mutex mutex,
             string fromProcess,
             string toProcess,
-            int sessionSize,
             int pollingMilliseconds
-        ) : base(mappedFile, mutex, fromProcess, toProcess, sessionSize)
+        ) : base(mappedFile, mutex, fromProcess, toProcess)
     {
         _pollingMilliseconds = pollingMilliseconds;
         _pollingTask = StartPollingAsync();
@@ -45,7 +44,7 @@ internal sealed class ReceiveSessionChannel : SessionChannel
 
             try
             {
-                string content = await ReadContentAsync();
+                string content = ReadContent();
                 ResetContentLength();
 
                 MessageReceived?.Invoke(this, new MessageReceivedEventArgs(content));
@@ -57,7 +56,7 @@ internal sealed class ReceiveSessionChannel : SessionChannel
         }
     }
 
-    public async Task CloseAsnyc()
+    public async Task CloseAsync()
     {
         _cancellationTokenSource.Cancel();
         await _pollingTask;

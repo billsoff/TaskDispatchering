@@ -39,7 +39,6 @@ public sealed class IpcSession
                     _sessionCreatingMutex,
                     fromProcess: null,
                     toProcess: processName,
-                    SessionSize,
                     RECEIVE_POLLING_MILLISECONDS
                 );
             _sessionCreateRequest.MessageReceived += OnSessionCreateRequestMessageReceived;
@@ -57,7 +56,7 @@ public sealed class IpcSession
 
     public event EventHandler<TextMessageReceivedEventArgs> TextMessageReceived;
 
-    public async Task CreateSessionAsync(string connectedProcessName)
+    public void CreateSession(string connectedProcessName)
     {
         if (_sendSessions.ContainsKey(connectedProcessName))
         {
@@ -92,8 +91,7 @@ public sealed class IpcSession
                 sendMappedFile,
                 sendMutex,
                 ProcessName,
-                connectedProcessName,
-                SessionSize
+                connectedProcessName
             );
         _sendSessions.Add(connectedProcessName, sendSession);
 
@@ -104,7 +102,6 @@ public sealed class IpcSession
                 receiveMutex,
                 fromProcess: connectedProcessName,
                 toProcess: ProcessName,
-                SessionSize,
                 ReceivePollingMilliseconds
             );
         _receiveSessions.Add(connectedProcessName, receiveSession);
@@ -122,18 +119,17 @@ public sealed class IpcSession
                 MemoryMappedFile.OpenExisting(CreateMappedFileName(connectedProcessName, SessionChannelType.SessionCreateRequest)),
                 Mutex.OpenExisting(CreateMutexName(connectedProcessName, channelType: SessionChannelType.SessionCreateRequest)),
                 ProcessName,
-                connectedProcessName,
-                SessionSize
+                connectedProcessName
             );
 
-        await sessionCreateRequest.SendMessage(message.ToJson());
+        sessionCreateRequest.SendMessage(message.ToJson());
     }
 
     public async Task CloseSessionAsync(string connectedProcessName)
     {
         if (_receiveSessions.TryGetValue(connectedProcessName, out ReceiveSessionChannel receiveSession))
         {
-            await receiveSession.CloseAsnyc();
+            await receiveSession.CloseAsync();
             _receiveSessions.Remove(connectedProcessName);
         }
 
@@ -141,13 +137,13 @@ public sealed class IpcSession
         {
             SessionCloseRequestMessage closeRequestMessage = new(ProcessName, connectedProcessName);
 
-            await sendSession.SendMessage(closeRequestMessage.ToJson());
+            sendSession.SendMessage(closeRequestMessage.ToJson());
 
             _sendSessions.Remove(connectedProcessName);
         }
     }
 
-    public Task SendMessageAsync(string text, string connectedProcessName)
+    public void SendMessage(string text, string connectedProcessName)
     {
         SendSessionChannel sendSession = _sendSessions[connectedProcessName];
         TextMessage message = new(ProcessName, connectedProcessName)
@@ -155,7 +151,7 @@ public sealed class IpcSession
             Text = text,
         };
 
-        return sendSession.SendMessage(message.ToJson());
+        sendSession.SendMessage(message.ToJson());
     }
 
     private void OnSessionCreateRequestMessageReceived(object sender, MessageReceivedEventArgs e)
@@ -172,15 +168,13 @@ public sealed class IpcSession
                 sendMappedFile,
                 sendMutex,
                 ProcessName,
-                message.From,
-                SessionSize
+                message.From
             );
         ReceiveSessionChannel receiveSession = new(
                 receiveMappedFile,
                 receiveMutex,
                 fromProcess: message.From,
                 toProcess: ProcessName,
-                SessionSize,
                 ReceivePollingMilliseconds
             );
 
@@ -206,7 +200,7 @@ public sealed class IpcSession
                 SessionClosed?.Invoke(this, new SessionClosedEventArgs(closeRequestMessage));
 
                 ReceiveSessionChannel receiveSession = (ReceiveSessionChannel)sender;
-                receiveSession.CloseAsnyc().Wait();
+                receiveSession.CloseAsync().Wait();
 
                 break;
 
