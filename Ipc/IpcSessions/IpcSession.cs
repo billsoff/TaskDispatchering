@@ -53,8 +53,9 @@ public sealed class IpcSession
     public int ReceivePollingMilliseconds { get; }
 
     public event EventHandler<SessionCreatedEventArgs> SessionCreated;
+    public event EventHandler<SessionClosedEventArgs> SessionClosed;
 
-    public event EventHandler<MessageReceivedEventArgs> MessageReceived;
+    public event EventHandler<TextMessageReceivedEventArgs> TextMessageReceived;
 
     public async Task CreateSessionAsync(string connectedProcessName)
     {
@@ -128,6 +129,24 @@ public sealed class IpcSession
         await sessionCreateRequest.SendMessage(message.ToJson());
     }
 
+    public async Task CloseSessionAsync(string connectedProcessName)
+    {
+        if (_receiveSessions.TryGetValue(connectedProcessName, out ReceiveSessionChannel receiveSession))
+        {
+            await receiveSession.CloseAsnyc();
+            _receiveSessions.Remove(connectedProcessName);
+        }
+
+        if (_sendSessions.TryGetValue(connectedProcessName, out SendSessionChannel sendSession))
+        {
+            SessionCloseRequestMessage closeRequestMessage = new(ProcessName, connectedProcessName);
+
+            await sendSession.SendMessage(closeRequestMessage.ToJson());
+
+            _sendSessions.Remove(connectedProcessName);
+        }
+    }
+
     public Task SendMessageAsync(string text, string connectedProcessName)
     {
         SendSessionChannel sendSession = _sendSessions[connectedProcessName];
@@ -173,8 +192,33 @@ public sealed class IpcSession
         SessionCreated?.Invoke(this, new SessionCreatedEventArgs(message));
     }
 
-    private void OnReceiveSessionMessageReceived(object sender, MessageReceivedEventArgs e) =>
-        MessageReceived?.Invoke(this, e);
+    private void OnReceiveSessionMessageReceived(object sender, MessageReceivedEventArgs e)
+    {
+        string action = MessageTypes.ProbMessageType(e.Data);
+
+        switch (action)
+        {
+            case MessageTypes.SessionCloseRequest:
+                var closeRequestMessage = Message.Load<SessionCloseRequestMessage>(e.Data);
+                _receiveSessions.Remove(closeRequestMessage.From);
+                _sendSessions.Remove(closeRequestMessage.From);
+
+                SessionClosed?.Invoke(this, new SessionClosedEventArgs(closeRequestMessage));
+
+                ReceiveSessionChannel receiveSession = (ReceiveSessionChannel)sender;
+                receiveSession.CloseAsnyc().Wait();
+
+                break;
+
+            case MessageTypes.Text:
+                var textMessage = Message.Load<TextMessage>(e.Data);
+                TextMessageReceived?.Invoke(this, new TextMessageReceivedEventArgs(textMessage));
+                break;
+
+            default:
+                throw new FormatException($"Action \"{action}\" cannot be recognized.");
+        }
+    }
 
     private static string CreateMappedFileName(string ownerProcessName, SessionChannelType channelType, string connectedProcessName = null) =>
         connectedProcessName != null

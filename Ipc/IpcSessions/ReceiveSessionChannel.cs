@@ -57,7 +57,7 @@ internal sealed class ReceiveSessionChannel : SessionChannel
         }
     }
 
-    public async Task Close()
+    public async Task CloseAsnyc()
     {
         _cancellationTokenSource.Cancel();
         await _pollingTask;
