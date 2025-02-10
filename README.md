@@ -2,12 +2,12 @@
 ### 使用方法
   类`IpcSession`用于建立会话，收/发消息
   1. 构造
-    1.1 服务端构造
+    <br />1.1 服务端构造
       ```c#
         IpcSession session = new(processName: "A", canBeConnected: true);
       ```
 
-    1.2 客户端构造
+    <br />1.2 客户端构造
       ```c#
         IpcSession session = new(processName: "B");
       ```
@@ -25,12 +25,12 @@
     ```
 
   5. 接受消息通过事件`TextMessageReceived`来实现
-    5.1 事件订阅
+    <br />5.1 事件订阅
       ```c#
         session.TextMessageReceived += OnTextMessageReceived;
       ```
 
-    5.2 接受消息
+    <br />5.2 接受消息
       ```c#
           static void OnTextMessageReceived(object sender, TextMessageReceivedEventArgs e)
           {
@@ -51,15 +51,15 @@
   _消息长度__消息内容_ _消息长度_ 是4个字节的整数，_消息内容_ 是UTF8编码的消息体。
 
 3. 发消息
-  3.1 获取`Mutex`锁
-  3.2 向`SendSessionChannel`写入 _消息长度_ 和 _消息内容_
-  3.3 释放`Mutex`锁
+  <br />3.1 获取`Mutex`锁
+  <br />3.2 向`SendSessionChannel`写入 _消息长度_ 和 _消息内容_
+  <br />3.3 释放`Mutex`锁
 
 4. 收消息
-  4.1 检查 _消息长度_ ，如为 `0`，则执行下一步，否则，转到 4.3
-  4.2 睡眠`100`毫秒(这个值可以在构造`IpcSession`时设置)，然后转到 4.1
-  4.3 获取`Mutex`锁
-  4.4 读取`MemoryMappedFile`中的消息，发布`MessageReceived`事件
-  4.5 将 _消息长度_ 置 `0`
-  4.6 释放`Mutex`锁
-  4.7 转到 4.1
+  <br />4.1 检查 _消息长度_ ，如为 `0`，则执行下一步，否则，转到 4.3
+  <br />4.2 睡眠`100`毫秒(这个值可以在构造`IpcSession`时设置)，然后转到 4.1
+  <br />4.3 获取`Mutex`锁
+  <br />4.4 读取`MemoryMappedFile`中的消息，发布`MessageReceived`事件
+  <br />4.5 将 _消息长度_ 置 `0`
+  <br />4.6 释放`Mutex`锁
+  <br />4.7 转到 4.1
