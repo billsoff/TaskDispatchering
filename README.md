@@ -9,7 +9,7 @@
 
     1.2 客户端构造
       ```c#
-          IpcSession session = new(processName: "B");
+        IpcSession session = new(processName: "B");
       ```
   
   2. 建立会话，由客户端发起
