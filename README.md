@@ -5,14 +5,14 @@
     <br />1.1 服务端构造
 
      ```c#
-        IpcSession session = new(processName: "A", canBeConnected: true);
-      ```
+         IpcSession session = new(processName: "A", canBeConnected: true);
+     ```
 
 <br />
 &nbsp;&nbsp;&nbsp;&nbsp;1.2 客户端构造
 
       ```c#
-        IpcSession session = new(processName: "B");
+          IpcSession session = new(processName: "B");
       ```
 
   2. 建立会话，由客户端发起
