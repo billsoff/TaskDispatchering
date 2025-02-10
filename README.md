@@ -3,8 +3,8 @@
   类`IpcSession`用于建立会话，收/发消息
   1. 构造
     <br />1.1 服务端构造
-  1. 
-  1. ```c#
+
+     ```c#
         IpcSession session = new(processName: "A", canBeConnected: true);
       ```
 
@@ -22,8 +22,7 @@
     ```
 
   3. 如果会话成功建立，服务端会发生`SessionCreated`事件
-    
-  4. 发送消息时，调用方法`SendMessageAsync`来实现
+  4. 发送消息时，调用方法`SendMessageAsync`来实现
 
     ```c#
       await session.SendMessageAsync(text, connectedProcessName);
