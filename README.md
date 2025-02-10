@@ -7,7 +7,8 @@
         IpcSession session = new(processName: "A", canBeConnected: true);
       ```
 
-    <br />1.2 客户端构造
+<br />
+    1.2 客户端构造
       ```c#
         IpcSession session = new(processName: "B");
       ```
