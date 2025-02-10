@@ -11,15 +11,18 @@ internal sealed class SendSessionChannel(
 {
     public void SendMessage(string message)
     {
+        if (string.IsNullOrEmpty(message))
+        {
+            return;
+        }
+
         Mutex.WaitOne();
         Stream.Seek(0, SeekOrigin.Begin);
 
         try
         {
-            int byteCount = Encoding.GetByteCount(message);
-
+            int byteCount = DoSendMessage(message);
             SetContentLength(byteCount);
-            DoSendMessage(message);
         }
         finally
         {
@@ -27,9 +30,16 @@ internal sealed class SendSessionChannel(
         }
     }
 
-    private void DoSendMessage(string message)
+    private int DoSendMessage(string message)
     {
+        SetContentLength(0);
+        long startPosition = Stream.Position;
+
         using StreamWriter writer = new(Stream, Encoding, leaveOpen: true);
+
         writer.Write(message);
+        writer.Close();
+
+        return (int)(Stream.Position - startPosition);
     }
 }
