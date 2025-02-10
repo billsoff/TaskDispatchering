@@ -3,8 +3,8 @@
   类`IpcSession`用于建立会话，收/发消息
   1. 构造
     1.1 服务端构造
-      ```csharp
-      IpcSession session = new(processName: "A", canBeConnected: true);
+      ```c#
+        IpcSession session = new(processName: "A", canBeConnected: true);
       ```
     1.2 客户端构造
       ```csharp
