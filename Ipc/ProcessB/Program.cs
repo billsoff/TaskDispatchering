@@ -1,7 +1,5 @@
 ﻿using IpcSessions;
 
-using TaskDispatching;
-
 using static System.Console;
 
 IpcSession session = new("B");
@@ -43,7 +41,6 @@ while (true)
 
     await session.SendMessageAsync(text, connectedProcessName);
 }
-
 
 
 void OnSessionClosed(object sender, SessionClosedEventArgs e)

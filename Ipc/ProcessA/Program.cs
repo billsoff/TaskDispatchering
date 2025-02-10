@@ -1,7 +1,5 @@
 ﻿using IpcSessions;
 
-using TaskDispatching;
-
 using static System.Console;
 
 IpcSession session = new("A", canBeConnected: true);
