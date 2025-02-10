@@ -8,7 +8,7 @@
       ```
 
 <br />
-    1.2 客户端构造
+&nbsp;&nbsp;&nbsp;&nbsp;1.2 客户端构造
       ```c#
         IpcSession session = new(processName: "B");
       ```
@@ -51,16 +51,16 @@
 3. 消息格式
   _消息长度__消息内容_ _消息长度_ 是4个字节的整数，_消息内容_ 是UTF8编码的消息体。
 
-3. 发消息
-  <br />3.1 获取`Mutex`锁
-  <br />3.2 向`SendSessionChannel`写入 _消息长度_ 和 _消息内容_
-  <br />3.3 释放`Mutex`锁
+4. 发消息
+  <br />4.1 获取`Mutex`锁
+  <br />4.2 向`SendSessionChannel`写入 _消息长度_ 和 _消息内容_
+  <br />4.3 释放`Mutex`锁
 
-4. 收消息
-  <br />4.1 检查 _消息长度_ ，如为 `0`，则执行下一步，否则，转到 4.3
-  <br />4.2 睡眠`100`毫秒(这个值可以在构造`IpcSession`时设置)，然后转到 4.1
-  <br />4.3 获取`Mutex`锁
-  <br />4.4 读取`MemoryMappedFile`中的消息，发布`MessageReceived`事件
-  <br />4.5 将 _消息长度_ 置 `0`
-  <br />4.6 释放`Mutex`锁
-  <br />4.7 转到 4.1
+5. 收消息
+  <br />5.1 检查 _消息长度_ ，如为 `0`，则执行下一步，否则，转到 5.3
+  <br />5.2 睡眠`100`毫秒(这个值可以在构造`IpcSession`时设置)，然后转到 5.1
+  <br />5.3 获取`Mutex`锁
+  <br />5.4 读取`MemoryMappedFile`中的消息，发布`MessageReceived`事件
+  <br />5.5 将 _消息长度_ 置 `0`
+  <br />5.6 释放`Mutex`锁
+  <br />5.7 转到 5.1
