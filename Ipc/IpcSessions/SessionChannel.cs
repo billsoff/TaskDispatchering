@@ -12,7 +12,7 @@ internal abstract class SessionChannel(
 {
     protected static readonly Encoding Encoding = new UTF8Encoding(
             encoderShouldEmitUTF8Identifier: false,
-            throwOnInvalidBytes: false
+            throwOnInvalidBytes: true
         );
 
     protected MemoryMappedViewStream Stream { get; } = mappedFile.CreateViewStream();
