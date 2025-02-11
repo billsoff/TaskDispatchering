@@ -55,6 +55,7 @@ public sealed class IpcSession
     public event EventHandler<SessionClosedEventArgs> SessionClosed;
 
     public event EventHandler<TextMessageReceivedEventArgs> TextMessageReceived;
+    public event EventHandler<ProgressMessageReceivedEventArgs> ProgressMessageReceived;
 
     public void CreateSession(string connectedProcessName)
     {
@@ -143,6 +144,26 @@ public sealed class IpcSession
         }
     }
 
+    public async Task<bool> CloseAllAsync()
+    {
+        try
+        {
+            List<Task> tasks = _sendSessions.Keys
+                       .Select(p => CloseSessionAsync(p))
+                       .ToList();
+
+            await Task.WhenAll(tasks);
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine(ex.ToString());
+
+            return false;
+        }
+    }
+
     public void SendMessage(string text, string connectedProcessName)
     {
         SendSessionChannel sendSession = _sendSessions[connectedProcessName];
@@ -207,6 +228,11 @@ public sealed class IpcSession
             case MessageTypes.Text:
                 var textMessage = Message.Load<TextMessage>(e.Data);
                 TextMessageReceived?.Invoke(this, new TextMessageReceivedEventArgs(textMessage));
+                break;
+
+            case MessageTypes.Progress:
+                var progressMessage = Message.Load<ProgressMessage>(e.Data);
+                ProgressMessageReceived?.Invoke(this, new ProgressMessageReceivedEventArgs(progressMessage));
                 break;
 
             default:

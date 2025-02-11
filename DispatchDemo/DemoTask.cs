@@ -29,7 +29,7 @@ namespace DispatchDemo
 
         public SchedulerTask ToSchedulerTask(TimeSpan delay = default) => new(this, delay);
 
-        public static TaskDispatcher Create() =>
+        public static TaskDispatcher_0 Create() =>
             /*
             ＜DataRow>
               <param localPath="A" No="1" Go="true" startTime="" />

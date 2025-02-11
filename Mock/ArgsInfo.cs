@@ -1,6 +1,6 @@
 ﻿namespace Mock
 {
-    internal readonly record struct ArgsInfo(string Name, int Steps, bool ThrowError)
+    internal readonly record struct ArgsInfo(string Name, string Host, int Steps, bool ThrowError)
     {
     }
 }

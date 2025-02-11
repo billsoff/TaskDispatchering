@@ -14,7 +14,7 @@ namespace DispatchDemo
 
         public bool ThrowError { get; } = throwError;
 
-        private StringBuilder _errorMessage = new();
+        private readonly StringBuilder _errorMessage = new();
 
         public event EventHandler<TaskStartingEventArgs> Starting;
         public event EventHandler<TaskReportStatusEventArgs> ReportStatus;

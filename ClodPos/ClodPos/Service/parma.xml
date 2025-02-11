@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <shopRow />
+  <schedulerProcessName>clodpos_schecduler</schedulerProcessName>
+  <tasks>
+    <task name="A" number="1" shouldWait="false" localPath="Mock.exe" args="-name:A -steps:2 -host:clodpos_schecduler" />
+    <task name="B" number="2" shouldWait="true" startTime="13:00:00" localPath="Mock.exe" args="-name:B -steps:6 -throwError -host:clodpos_schecduler" />
+    <task name="C" number="3" shouldWait="true" localPath="Mock.exe" args="-name:C -steps:3 -host:clodpos_schecduler" />
+    <task name="D" number="4" shouldWait="false" localPath="Mock.exe" args="-name:D -steps:4 -host:clodpos_schecduler" />
+    <task name="E" number="5" shouldWait="false" intervalTime="0.00:00:10" times="2" localPath="Mock.exe" args="-name:E -steps:5 -host:clodpos_schecduler" />
+  </tasks>
+</root>

@@ -17,7 +17,7 @@ Console.WriteLine();
 DateTime now = DateTime.Today + new TimeSpan(12, 59, 0);
 MinashiDateTime.Offset = now - DateTime.Now;
 
-TaskDispatcher dispatcher = new()
+TaskDispatcher_0 dispatcher = new()
 {
     Sequential = new SequentialDispatcher([
             new ProcessTask("A", 2).ToSchedulerTask(),

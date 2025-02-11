@@ -6,6 +6,8 @@ internal static class MessageTypes
 {
     public const string Text = "Text";
 
+    public const string Progress = "Progress";
+
     public const string SessionCloseRequest = "SessionCloseRequest";
 
     public static string ProbMessageType(string message)
