@@ -63,11 +63,12 @@ for (int step = 0; step < argsInfo.Steps; step++)
     int timeUsed = Max(1, random.Next(3));
     await Task.Delay(timeUsed * 1000);
 
-    WriteLine($"Step {step + 1}/{argsInfo.Steps} completed.");
     SendProgress(step + 1);
+    WriteLine($"Step {step + 1}/{argsInfo.Steps} completed.");
 }
 
-await session?.CloseSessionAsync(argsInfo.Host);
+session.Dispose();
+
 
 void SendProgress(int step)
 {
@@ -82,7 +83,7 @@ void SendProgress(int step)
                 Name = ops[step],
                 CurrentStep = step,
                 TotalSteps = argsInfo.Steps,
-            }.ToJson(),
+            },
             argsInfo.Host
         );
 }

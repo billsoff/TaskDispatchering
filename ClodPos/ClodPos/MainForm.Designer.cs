@@ -37,8 +37,8 @@
             taskName = new ColumnHeader();
             taskStatus = new ColumnHeader();
             taskMessage = new ColumnHeader();
-            txtLog = new TextBox();
             taskProgress = new ColumnHeader();
+            txtLog = new TextBox();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -136,6 +136,11 @@
             taskMessage.Text = "メッセージ";
             taskMessage.Width = 300;
             // 
+            // taskProgress
+            // 
+            taskProgress.Text = "進捗";
+            taskProgress.Width = 300;
+            // 
             // txtLog
             // 
             txtLog.Dock = DockStyle.Fill;
@@ -144,13 +149,9 @@
             txtLog.Multiline = true;
             txtLog.Name = "txtLog";
             txtLog.ReadOnly = true;
+            txtLog.ScrollBars = ScrollBars.Vertical;
             txtLog.Size = new Size(724, 165);
             txtLog.TabIndex = 0;
-            // 
-            // taskProgress
-            // 
-            taskProgress.Text = "進捗";
-            taskProgress.Width = 300;
             // 
             // MainForm
             // 

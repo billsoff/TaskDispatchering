@@ -2,7 +2,7 @@
 
 namespace IpcSessions;
 
-public sealed class IpcSession
+public sealed class IpcSession : IDisposable
 {
     private const int SESSION_SIZE = 1024 * 4;
     private const int RECEIVE_POLLING_MILLISECONDS = 100;
@@ -126,11 +126,11 @@ public sealed class IpcSession
         sessionCreateRequest.SendMessage(message.ToJson());
     }
 
-    public async Task CloseSessionAsync(string connectedProcessName)
+    public void CloseSession(string connectedProcessName)
     {
         if (_receiveSessions.TryGetValue(connectedProcessName, out ReceiveSessionChannel receiveSession))
         {
-            await receiveSession.CloseAsync();
+            receiveSession.Dispose();
             _receiveSessions.Remove(connectedProcessName);
         }
 
@@ -139,20 +139,20 @@ public sealed class IpcSession
             SessionCloseRequestMessage closeRequestMessage = new(ProcessName, connectedProcessName);
 
             sendSession.SendMessage(closeRequestMessage.ToJson());
+            sendSession.Dispose();
 
             _sendSessions.Remove(connectedProcessName);
         }
     }
 
-    public async Task<bool> CloseAllAsync()
+    public bool CloseAll()
     {
         try
         {
-            List<Task> tasks = _sendSessions.Keys
-                       .Select(p => CloseSessionAsync(p))
-                       .ToList();
-
-            await Task.WhenAll(tasks);
+            foreach (string p in _sendSessions.Keys)
+            {
+                CloseSession(p);
+            }
 
             return true;
         }
@@ -166,11 +166,17 @@ public sealed class IpcSession
 
     public void SendMessage(string text, string connectedProcessName)
     {
-        SendSessionChannel sendSession = _sendSessions[connectedProcessName];
         TextMessage message = new(ProcessName, connectedProcessName)
         {
             Text = text,
         };
+
+        SendMessage(message, connectedProcessName);
+    }
+
+    public void SendMessage(Message message, string connectedProcessName)
+    {
+        SendSessionChannel sendSession = _sendSessions[connectedProcessName];
 
         sendSession.SendMessage(message.ToJson());
     }
@@ -215,14 +221,16 @@ public sealed class IpcSession
         {
             case MessageTypes.SessionCloseRequest:
                 var closeRequestMessage = Message.Load<SessionCloseRequestMessage>(e.Data);
+                _receiveSessions[closeRequestMessage.From]?.Dispose();
                 _receiveSessions.Remove(closeRequestMessage.From);
+
+                _sendSessions[closeRequestMessage.From]?.Dispose();
                 _sendSessions.Remove(closeRequestMessage.From);
 
                 SessionClosed?.Invoke(this, new SessionClosedEventArgs(closeRequestMessage));
 
                 ReceiveSessionChannel receiveSession = (ReceiveSessionChannel)sender;
-                receiveSession.CloseAsync().Wait();
-
+                receiveSession.Dispose();
                 break;
 
             case MessageTypes.Text:
@@ -256,4 +264,10 @@ public sealed class IpcSession
         SessionChannelType.ReceiveMessage => "receive",
         _ => "session_create",
     };
+
+    public void Dispose()
+    {
+        _sessionCreateRequest?.Dispose();
+        CloseAll();
+    }
 }

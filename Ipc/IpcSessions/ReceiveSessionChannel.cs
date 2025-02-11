@@ -1,4 +1,5 @@
 ﻿using System.IO.MemoryMappedFiles;
+using System.Runtime.CompilerServices;
 
 namespace IpcSessions;
 
@@ -6,7 +7,9 @@ internal sealed class ReceiveSessionChannel : SessionChannel
 {
     private readonly int _pollingMilliseconds;
     private readonly CancellationTokenSource _cancellationTokenSource = new();
-    private readonly Task _pollingTask;
+    private readonly ConfiguredTaskAwaitable _pollingTask;
+
+    private readonly Thread _pollingThread;
 
     public ReceiveSessionChannel(
             MemoryMappedFile mappedFile,
@@ -17,12 +20,16 @@ internal sealed class ReceiveSessionChannel : SessionChannel
         ) : base(mappedFile, mutex, fromProcess, toProcess)
     {
         _pollingMilliseconds = pollingMilliseconds;
-        _pollingTask = StartPollingAsync();
+        _pollingThread = new Thread(StartPolling)
+        {
+            IsBackground = true
+        };
+        _pollingThread.Start();
     }
 
     public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
-    private async Task StartPollingAsync()
+    private void StartPolling()
     {
         CancellationToken token = _cancellationTokenSource.Token;
 
@@ -35,7 +42,7 @@ internal sealed class ReceiveSessionChannel : SessionChannel
 
             if (!HasContent())
             {
-                await Task.Delay(_pollingMilliseconds);
+                Thread.Sleep(_pollingMilliseconds);
 
                 continue;
             }
@@ -56,9 +63,9 @@ internal sealed class ReceiveSessionChannel : SessionChannel
         }
     }
 
-    public async Task CloseAsync()
+    protected override void Dispose(bool disposing)
     {
+        base.Dispose(disposing);
         _cancellationTokenSource.Cancel();
-        await _pollingTask;
     }
 }

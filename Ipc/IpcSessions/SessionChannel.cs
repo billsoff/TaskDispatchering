@@ -8,7 +8,7 @@ internal abstract class SessionChannel(
         Mutex mutex,
         string fromProcess,
         string toProcess
-    )
+    ) : IDisposable
 {
     protected static readonly Encoding Encoding = new UTF8Encoding(
             encoderShouldEmitUTF8Identifier: false,
@@ -71,6 +71,18 @@ internal abstract class SessionChannel(
             );
 
         return reader.ReadToEnd();
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        Stream?.Close();
+        mappedFile?.Dispose();
     }
 
 

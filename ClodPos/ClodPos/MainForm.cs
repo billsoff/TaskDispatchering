@@ -29,13 +29,12 @@ namespace ClodPos
 
             LoadTasks(dispatcher);
 
-            //IpcSession session = new(taskConfig.SchedulerProcessName, canBeConnected: true);
+            //using IpcSession session = new(taskConfig.SchedulerProcessName, canBeConnected: true);
             //session.ProgressMessageReceived += OnSessionProgressMessageReceived;
 
             btnExecute.Enabled = false;
 
             await dispatcher.ExecuteAsync();
-            //await session.CloseAllAsync();
         }
 
         private void OnDispatcherTaskStatusChanged(object sender, SchedulerTaskStatusChangedEventArgs e)
@@ -77,7 +76,9 @@ namespace ClodPos
             ListViewItem item = lvTasks.Items
                                 .Cast<ListViewItem>()
                                 .Where(i => ((SchedulerTask)i.Tag).Name == message.From &&
-                                            ((SchedulerTask)i.Tag).Status != SchedulerTaskStatus.Waiting)
+                                            ((SchedulerTask)i.Tag).Status != SchedulerTaskStatus.Waiting &&
+                                            ((SchedulerTask)i.Tag).Status != SchedulerTaskStatus.Succeeded &&
+                                            ((SchedulerTask)i.Tag).Status != SchedulerTaskStatus.Failed)
                                 .FirstOrDefault();
 
             if (item == null)
@@ -85,7 +86,7 @@ namespace ClodPos
                 return;
             }
 
-            item.SubItems[5].Text = $"{message.Name} {message.CurrentStep}/{message.TotalSteps} ({message.Timestamp:HH:mm:ss})";
+            item.SubItems[4].Text = $"{message.Name} {message.CurrentStep}/{message.TotalSteps} ({message.Timestamp:HH:mm:ss})";
         }
 
         private ListViewItem FindItemByTask(SchedulerTask task)
@@ -133,6 +134,7 @@ namespace ClodPos
                             numberedTask.Number.ToString(),
                             numberedTask.Task.Name,
                             numberedTask.Task.Status.GetDisplayName(),
+                            string.Empty,
                             string.Empty,
                         ]
                     )

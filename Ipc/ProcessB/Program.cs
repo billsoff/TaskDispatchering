@@ -29,7 +29,7 @@ while (true)
 
     if (string.Equals(text, "bye", StringComparison.OrdinalIgnoreCase))
     {
-        await session.CloseSessionAsync(connectedProcessName);
+        session.CloseSession(connectedProcessName);
 
         break;
     }
