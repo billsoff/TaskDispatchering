@@ -16,7 +16,22 @@ internal sealed class SendSessionChannel(
             return;
         }
 
+        while (HasContent())
+        {
+            Thread.Sleep(100);
+        }
+
         Mutex.WaitOne();
+
+        if (HasContent())
+        {
+            Mutex.ReleaseMutex();
+
+            SendMessage(message);
+
+            return;
+        }
+
         Stream.Seek(0, SeekOrigin.Begin);
 
         try

@@ -15,7 +15,19 @@ namespace ClodPos
             InitializeComponent();
         }
 
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+
+        }
+
         private async void OnExecuteButtonClick(object sender, EventArgs e)
+        {
+            await ExecuteAsync();
+        }
+
+        private async Task ExecuteAsync()
         {
             DateTime now = DateTime.Today + new TimeSpan(12, 59, 40);
             MinashiDateTime.Offset = now - DateTime.Now;
@@ -29,8 +41,8 @@ namespace ClodPos
 
             LoadTasks(dispatcher);
 
-            //using IpcSession session = new(taskConfig.SchedulerProcessName, canBeConnected: true);
-            //session.ProgressMessageReceived += OnSessionProgressMessageReceived;
+            using IpcSession session = new(taskConfig.SchedulerProcessName, canBeConnected: true);
+            session.ProgressMessageReceived += OnSessionProgressMessageReceived;
 
             btnExecute.Enabled = false;
 
@@ -86,7 +98,7 @@ namespace ClodPos
                 return;
             }
 
-            item.SubItems[4].Text = $"{message.Name} {message.CurrentStep}/{message.TotalSteps} ({message.Timestamp:HH:mm:ss})";
+            item.SubItems[4].Text = $"{message.Timestamp:HH:mm:ss} {message.CurrentStep}/{message.TotalSteps}: {message.Name}";
         }
 
         private ListViewItem FindItemByTask(SchedulerTask task)
