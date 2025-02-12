@@ -14,12 +14,20 @@ public class TaskConfig
         return config;
     }
 
+    [XmlElement("shopRow")]
+    public ShopRow ShopRow { get; set; }
+
     [XmlElement("schedulerProcessName")]
     public string SchedulerProcessName { get; set; }
 
     [XmlArray("tasks")]
     [XmlArrayItem("task")]
     public TaskItem[] Tasks { get; set; }
+}
+
+public sealed class ShopRow
+{
+
 }
 
 public sealed class TaskItem
