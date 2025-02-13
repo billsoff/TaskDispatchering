@@ -2,12 +2,12 @@
 <root>
   <shopRow />
   <tasks>
-    <task name="A" number="1" shouldWait="false" runNextOnFailed ="false" localPath="Mock.exe" args="-name:A -steps:2 -host:clodpos_schecduler" />
-    <task name="B" number="2" shouldWait="false" runNextOnFailed ="false" startTime="13:00:00" localPath="Mock.exe" args="-name:B -steps:6 -throwError -host:clodpos_schecduler" />
-    <task name="C" number="3" shouldWait="false" runNextOnFailed ="true" localPath="Mock.exe" args="-name:C -steps:3 -host:clodpos_schecduler" />
-    <task name="D" number="4" shouldWait="false" runNextOnFailed ="true" localPath="Mock.exe" args="-name:D -steps:4 -host:clodpos_schecduler" />
-    <task name="E" number="5" shouldWait="true" runNextOnFailed ="true" localPath="Mock.exe" args="-name:E -steps:5 -host:clodpos_schecduler" />
-    <task name="F" number="6" shouldWait="false" runNextOnFailed ="false" localPath="Mock.exe" args="-name:A -steps:2 -host:clodpos_schecduler" />
-    <task name="G" number="7" shouldWait="false" runNextOnFailed ="false" localPath="Mock.exe" args="-name:A -steps:2 -host:clodpos_schecduler" />
+    <task name="A" number="1" shouldWait="false" runNextOnFailed ="false" localPath="Mock.exe" args="-name:A -steps:2 host:clodpos_schecduler" />
+    <task name="B" number="2" shouldWait="false" runNextOnFailed ="false" startTime="13:00:00" localPath="Mock.exe" args="-name:B -steps:6 -throwError host:clodpos_schecduler" />
+    <task name="C" number="3" shouldWait="false" runNextOnFailed ="true" localPath="Mock.exe" args="-name:C -steps:3 host:clodpos_schecduler" />
+    <task name="D" number="4" shouldWait="false" runNextOnFailed ="true" localPath="Mock.exe" args="-name:D -steps:4 host:clodpos_schecduler" />
+    <task name="E" number="5" shouldWait="true" runNextOnFailed ="true" localPath="Mock.exe" args="-name:E -steps:5 host:clodpos_schecduler" />
+    <task name="F" number="6" shouldWait="false" runNextOnFailed ="false" localPath="Mock.exe" args="-name:F -steps:2 host:clodpos_schecduler" />
+    <task name="G" number="7" shouldWait="false" runNextOnFailed ="false" localPath="Mock.exe" args="-name:G -steps:2 host:clodpos_schecduler" />
   </tasks>
 </root>

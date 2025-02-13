@@ -33,10 +33,8 @@ public sealed class TaskDispatcher
         {
             index++;
 
-            Task currentTask = schedulerTask.ExecuteAsync(out IList<Task> remainderTasks);
-            allRemainderTasks.Add(currentTask);
-
-            await currentTask;
+            await schedulerTask.ExecuteAsync(out IList<Task> remainderTasks);
+            allRemainderTasks.AddRange(remainderTasks);
 
             bool canRunNext = schedulerTask.CanRunNext();
 
@@ -51,6 +49,8 @@ public sealed class TaskDispatcher
         }
 
         await Task.WhenAll(allRemainderTasks);
+
+        Completed?.Invoke(this, EventArgs.Empty);
     }
 
     private void PendingRemainderTasks(int startIndex)

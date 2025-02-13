@@ -41,8 +41,8 @@ namespace ClodPos
 
             LoadTasks(dispatcher);
 
-            using IpcSession session = new(taskConfig.SchedulerProcessName, canBeConnected: true);
-            session.ProgressMessageReceived += OnSessionProgressMessageReceived;
+            //using IpcSession session = new(taskConfig.SchedulerProcessName, canBeConnected: true);
+            //session.ProgressMessageReceived += OnSessionProgressMessageReceived;
 
             btnExecute.Enabled = false;
 
