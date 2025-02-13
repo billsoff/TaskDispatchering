@@ -8,27 +8,28 @@ namespace TaskDispatching
 
         public async Task<string> ExecuteAsync()
         {
-            StringBuilder buffer = new();
-            int index = -1;
+            throw new NotImplementedException();
+            //StringBuilder buffer = new();
+            //int index = -1;
 
-            foreach (SchedulerTask task in Tasks)
-            {
-                index++;
+            //foreach (SchedulerTask task in Tasks)
+            //{
+            //    index++;
 
-                buffer.AppendLine(task.Name);
-                buffer.AppendLine(string.Empty.PadRight(50, '-'));
+            //    buffer.AppendLine(task.Name);
+            //    buffer.AppendLine(string.Empty.PadRight(50, '-'));
 
-                buffer.AppendLine(await task.ExecuteAsync());
+            //    buffer.AppendLine(await task.ExecuteAsync());
 
-                if (task.Status == SchedulerTaskStatus.Failed)
-                {
-                    PendingRemainderTasks(index + 1);
+            //    if (task.Status == SchedulerTaskStatus.Failed)
+            //    {
+            //        PendingRemainderTasks(index + 1);
 
-                    break;
-                }
-            }
+            //        break;
+            //    }
+            //}
 
-            return buffer.ToString();
+            //return buffer.ToString();
         }
 
         private void PendingRemainderTasks(int startIndex)

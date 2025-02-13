@@ -6,56 +6,51 @@ namespace ClodPos.Service
     {
         public static TaskDispatcher BuildTaskDispatcher(this TaskConfig taskConfig)
         {
-            List<SequentialDispatcher> dispatchers = [];
+            List<SchedulerTask> taskQueue = [];
+            List<PrimitiveSchedulerTask> primitiveTasks = [];
 
-            List<(SchedulerTask Task, int Number)> all = [];
-            List<SchedulerTask> group = [];
+            List<PrimitiveSchedulerTask> group = [];
 
             foreach (TaskItem item in taskConfig.Tasks.OrderBy(t => t.Number))
             {
-                IList<SchedulerTask> tasks = BuildTask(item);
+                PrimitiveSchedulerTask primitiveTask = BuildTask(item);
+                primitiveTasks.Add(primitiveTask);
 
-                if (group.Count != 0 && !item.ShouldWait)
+                if (group.Count != 0 && item.ShouldWait)
                 {
-                    dispatchers.Add(new SequentialDispatcher(group));
+                    if (group.Count == 1)
+                    {
+                        taskQueue.Add(group[0]);
+                    }
+                    else
+                    {
+                        taskQueue.Add(new ParallelCompositeSchedulerTask(group.Cast<SchedulerTask>().ToList()));
+                    }
+
                     group = [];
                 }
 
-                group.AddRange(tasks);
-
-                foreach (SchedulerTask task in tasks)
-                {
-                    all.Add((task, item.Number));
-                }
+                group.AddRange(primitiveTasks);
             }
 
             if (group.Count != 0)
             {
-                dispatchers.Add(new SequentialDispatcher(group));
-            }
-
-            return new TaskDispatcher(dispatchers, all);
-        }
-
-        private static List<SchedulerTask> BuildTask(TaskItem item)
-        {
-            List<SchedulerTask> tasks = [];
-            tasks.Add(ConstructWorker().ArrangeScheduler(Delay));
-
-            if (item.Times > 1)
-            {
-                for (int i = 0; i < item.Times - 1; i++)
+                if (group.Count == 1)
                 {
-                    tasks.Add(
-                            ConstructWorker()
-                            .ArrangeScheduler(
-                                    TimeSpan.FromSeconds(Math.Max(3, item.IntervalTime.TotalSeconds))
-                                )
-                        );
+                    taskQueue.Add(group[0]);
+                }
+                else
+                {
+                    taskQueue.Add(new ParallelCompositeSchedulerTask(group.Cast<SchedulerTask>().ToList()));
                 }
             }
 
-            return tasks;
+            return new TaskDispatcher(taskQueue, primitiveTasks);
+        }
+
+        private static PrimitiveSchedulerTask BuildTask(TaskItem item)
+        {
+            return ConstructWorker().ArrangeScheduler(item.Number, item.RunNextOnFailed);
 
 
             WorkerTask ConstructWorker() =>
@@ -72,23 +67,6 @@ namespace ClodPos.Service
                         @"..\..\..\..\..\Mock\bin\Debug\net8.0-windows\",
                         localPath
                     );
-
-            TimeSpan Delay()
-            {
-                if (!item.IsStartTimeSpecified)
-                {
-                    return TimeSpan.Zero;
-                }
-
-                TimeSpan delay = item.StartTime - MinashiDateTime.Now;
-
-                if (delay < TimeSpan.Zero)
-                {
-                    delay += TimeSpan.FromHours(24);
-                }
-
-                return delay;
-            }
         }
     }
 }

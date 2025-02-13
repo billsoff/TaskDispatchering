@@ -2,21 +2,21 @@
 
 public sealed class TaskDispatcher
 {
-    public TaskDispatcher(IList<SequentialDispatcher> sequentialDispatchers, IList<(SchedulerTask Task, int Number)> schedulerTask)
+    public TaskDispatcher(IList<SchedulerTask> taskQueue, IList<PrimitiveSchedulerTask> primitiveTasks)
     {
-        SequentialDispatchers = sequentialDispatchers;
-        SchedulerTasks = schedulerTask;
+        TaskQueue = taskQueue;
+        PrimitiveTasks = primitiveTasks;
 
-        foreach (SchedulerTask task in GetSchedulerTasks())
+        foreach (PrimitiveSchedulerTask task in PrimitiveTasks)
         {
             task.TaskStatusChanged += OnTaskStatusChanged;
             task.TaskProgressReported += OnTaskProgressReported;
         }
     }
 
-    public IList<SequentialDispatcher> SequentialDispatchers { get; }
+    public IList<SchedulerTask> TaskQueue { get; }
 
-    public IList<(SchedulerTask Task, int Number)> SchedulerTasks { get; }
+    public IList<PrimitiveSchedulerTask> PrimitiveTasks { get; }
 
     public event EventHandler<SchedulerTaskStatusChangedEventArgs> TaskStatusChanged;
 
@@ -24,22 +24,41 @@ public sealed class TaskDispatcher
 
     public event EventHandler Completed;
 
-    public IEnumerable<SchedulerTask> GetSchedulerTasks() =>
-        SequentialDispatchers
-        .SelectMany(d => d.Tasks)
-        .OrderBy(t => t.Name);
-
-    public async Task<string> ExecuteAsync()
+    public async Task ExecuteAsync()
     {
-        List<Task<string>> tasks = SequentialDispatchers
-                                   .Select(s => s.ExecuteAsync())
-                                   .ToList();
+        int index = -1;
+        List<Task> allRemainderTasks = [];
 
-        string[] log = await Task.WhenAll(tasks);
+        foreach (SchedulerTask schedulerTask in TaskQueue)
+        {
+            index++;
 
-        Completed?.Invoke(this, EventArgs.Empty);
+            Task currentTask = schedulerTask.ExecuteAsync(out IList<Task> remainderTasks);
+            allRemainderTasks.Add(currentTask);
 
-        return string.Join(Environment.NewLine, log);
+            await currentTask;
+
+            bool canRunNext = schedulerTask.CanRunNext();
+
+            if (canRunNext)
+            {
+                continue;
+            }
+
+            PendingRemainderTasks(index + 1);
+
+            break;
+        }
+
+        await Task.WhenAll(allRemainderTasks);
+    }
+
+    private void PendingRemainderTasks(int startIndex)
+    {
+        for (int i = startIndex; i < TaskQueue.Count; i++)
+        {
+            TaskQueue[i].Pending();
+        }
     }
 
     private void OnTaskStatusChanged(object sender, SchedulerTaskStatusChangedEventArgs e)

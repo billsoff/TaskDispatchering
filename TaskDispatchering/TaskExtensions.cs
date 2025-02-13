@@ -2,8 +2,6 @@
 {
     public static class TaskExtensions
     {
-        public static SchedulerTask ArrangeScheduler(this ITask worker, TimeSpan delay = default) => new(worker, delay);
-
-        public static SchedulerTask ArrangeScheduler(this ITask worker, Func<TimeSpan> delayEvaluator) => new(worker, delayEvaluator);
+        public static PrimitiveSchedulerTask ArrangeScheduler(this ITask worker, int number, bool runNextOnFailed) => new(worker, number, runNextOnFailed);
     }
 }

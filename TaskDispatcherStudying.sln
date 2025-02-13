@@ -5,8 +5,6 @@ VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskDispatching", "TaskDispatchering\TaskDispatching.csproj", "{34A74EAF-E468-47AE-B6FB-56AB58908A6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DispatchDemo", "DispatchDemo\DispatchDemo.csproj", "{63F09E81-6B0C-48E9-B8BE-3CA9DAB9FE80}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mock", "Mock\Mock.csproj", "{C988CE64-88C3-4E60-AD59-6D971CD7BD8D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ipc", "Ipc", "{7B7F759D-E5E0-498C-A102-2FCE911F7ECE}"
@@ -17,9 +15,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessA", "Ipc\ProcessA\Pr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcessB", "Ipc\ProcessB\ProcessB.csproj", "{18AB9A94-0924-4D31-B7EA-1D0AAE6ADB1F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClodsPos", "ClodsPos", "{81B831E0-CDA5-45C6-8F86-4D6EFB9F1085}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MAIN", "MAIN", "{81B831E0-CDA5-45C6-8F86-4D6EFB9F1085}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClodPos", "ClodPos\ClodPos\ClodPos.csproj", "{A666F4A6-0E73-4718-B344-B26D43688BF4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Main", "ClodPos\ClodPos\Main.csproj", "{A666F4A6-0E73-4718-B344-B26D43688BF4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +29,6 @@ Global
 		{34A74EAF-E468-47AE-B6FB-56AB58908A6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34A74EAF-E468-47AE-B6FB-56AB58908A6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34A74EAF-E468-47AE-B6FB-56AB58908A6F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{63F09E81-6B0C-48E9-B8BE-3CA9DAB9FE80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{63F09E81-6B0C-48E9-B8BE-3CA9DAB9FE80}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{63F09E81-6B0C-48E9-B8BE-3CA9DAB9FE80}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{63F09E81-6B0C-48E9-B8BE-3CA9DAB9FE80}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C988CE64-88C3-4E60-AD59-6D971CD7BD8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C988CE64-88C3-4E60-AD59-6D971CD7BD8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C988CE64-88C3-4E60-AD59-6D971CD7BD8D}.Release|Any CPU.ActiveCfg = Release|Any CPU

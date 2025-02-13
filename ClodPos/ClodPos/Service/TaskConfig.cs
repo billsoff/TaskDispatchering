@@ -47,29 +47,6 @@ public sealed class TaskItem
     [XmlAttribute("shouldWait")]
     public bool ShouldWait { get; set; }
 
-    [XmlAttribute("startTime")]
-    public DateTime StartTime { get; set; }
-
-    [XmlAttribute("intervalTime")]
-    public string IntervalTimeValue { get; set; }
-
-    [XmlIgnore]
-    public TimeSpan IntervalTime
-    {
-        get
-        {
-            if (string.IsNullOrEmpty(IntervalTimeValue))
-            {
-                return TimeSpan.Zero;
-            }
-
-            return TimeSpan.Parse(IntervalTimeValue);
-        }
-    }
-
-    [XmlIgnore]
-    public bool IsStartTimeSpecified => StartTime != default;
-
-    [XmlAttribute("times")]
-    public int Times { get; set; }
+    [XmlAttribute("runNextOnFailed")]
+    public bool RunNextOnFailed { get; set; }    
 }

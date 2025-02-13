@@ -15,11 +15,11 @@ namespace ClodPos
             InitializeComponent();
         }
 
-        protected override void OnLoad(EventArgs e)
+        protected override async void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
-
+            await ExecuteAsync();
         }
 
         private async void OnExecuteButtonClick(object sender, EventArgs e)
@@ -117,7 +117,7 @@ namespace ClodPos
             }
 
             item = lvTasks.SelectedItems.Cast<ListViewItem>().FirstOrDefault();
-            SchedulerTask task = (SchedulerTask)item?.Tag;
+            PrimitiveSchedulerTask task = (PrimitiveSchedulerTask)item?.Tag;
 
             if (task != null)
             {
@@ -139,19 +139,19 @@ namespace ClodPos
         {
             lvTasks.Items.Clear();
 
-            foreach (var numberedTask in dispatcher.SchedulerTasks)
+            foreach (var primitiveTask in dispatcher.PrimitiveTasks)
             {
                 ListViewItem item = new(
                         [
-                            numberedTask.Number.ToString(),
-                            numberedTask.Task.Name,
-                            numberedTask.Task.Status.GetDisplayName(),
+                            primitiveTask.Number.ToString(),
+                            primitiveTask.Name,
+                            primitiveTask.Status.GetDisplayName(),
                             string.Empty,
                             string.Empty,
                         ]
                     )
                 {
-                    Tag = numberedTask.Task
+                    Tag = primitiveTask
                 };
 
                 lvTasks.Items.Add(item);
