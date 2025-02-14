@@ -1,6 +1,6 @@
-﻿using TaskDispatching;
+﻿using A.TaskDispatching;
 
-namespace ClodPos.Service
+namespace A.UI.Service
 {
     internal static class TaskConfigExtensions
     {

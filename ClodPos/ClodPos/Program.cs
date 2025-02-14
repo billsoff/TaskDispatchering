@@ -1,4 +1,4 @@
-namespace ClodPos
+namespace A.UI
 {
     internal static class Program
     {

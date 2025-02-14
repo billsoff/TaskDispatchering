@@ -1,4 +1,4 @@
-﻿namespace TaskDispatching
+﻿namespace A.TaskDispatching
 {
     public static class SchedulerTaskStatusExtensions
     {

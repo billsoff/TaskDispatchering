@@ -1,4 +1,4 @@
-﻿namespace TaskDispatching
+﻿namespace A.TaskDispatching
 {
     public sealed class TaskReportStatusEventArgs(DateTimeOffset timestamp, string message) : TaskEventArgs(timestamp)
     {

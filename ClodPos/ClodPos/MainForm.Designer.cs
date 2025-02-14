@@ -1,4 +1,4 @@
-﻿namespace ClodPos
+﻿namespace A.UI
 {
     partial class MainForm
     {

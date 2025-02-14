@@ -1,4 +1,4 @@
-﻿namespace TaskDispatching
+﻿namespace A.TaskDispatching
 {
     public class PrimitiveSchedulerTask : SchedulerTask
     {

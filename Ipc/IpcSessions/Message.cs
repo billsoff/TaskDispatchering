@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-using TaskDispatching;
+using A.TaskDispatching;
 
 namespace IpcSessions;
 

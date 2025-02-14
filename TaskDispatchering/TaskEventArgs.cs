@@ -1,4 +1,4 @@
-﻿namespace TaskDispatching
+﻿namespace A.TaskDispatching
 {
     public abstract class TaskEventArgs(DateTimeOffset timestamp) : EventArgs
     {

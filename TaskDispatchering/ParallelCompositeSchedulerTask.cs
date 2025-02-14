@@ -1,4 +1,4 @@
-﻿namespace TaskDispatching
+﻿namespace A.TaskDispatching
 {
     public sealed class ParallelCompositeSchedulerTask(IList<SchedulerTask> schedulerTasks)
         : CompositeSchedulerTask(schedulerTasks)

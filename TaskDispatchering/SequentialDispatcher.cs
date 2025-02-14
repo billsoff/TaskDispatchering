@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace TaskDispatching
+namespace A.TaskDispatching
 {
     public sealed class SequentialDispatcher(IList<SchedulerTask> tasks)
     {

@@ -1,12 +1,12 @@
-using ClodPos.Service;
+using A.UI.Service;
 
 using IpcSessions;
 
 using System.Data;
 
-using TaskDispatching;
+using A.TaskDispatching;
 
-namespace ClodPos
+namespace A.UI
 {
     public partial class MainForm : Form
     {

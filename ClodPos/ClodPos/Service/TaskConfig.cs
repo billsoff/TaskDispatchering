@@ -1,7 +1,7 @@
 ﻿using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
-namespace ClodPos.Service;
+namespace A.UI.Service;
 
 [XmlRoot("root")]
 public class TaskConfig

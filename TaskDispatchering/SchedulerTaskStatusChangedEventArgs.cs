@@ -1,4 +1,4 @@
-﻿namespace TaskDispatching
+﻿namespace A.TaskDispatching
 {
     public sealed class SchedulerTaskStatusChangedEventArgs(DateTimeOffset timestamp, SchedulerTask task)
         : SchedulerTaskEventArgs(timestamp, task)

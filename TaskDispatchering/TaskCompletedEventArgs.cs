@@ -1,4 +1,4 @@
-﻿namespace TaskDispatching
+﻿namespace A.TaskDispatching
 {
     public sealed class TaskCompletedEventArgs(DateTimeOffset timestamp, string errorMessage = null) : TaskEventArgs(timestamp)
     {

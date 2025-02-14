@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace TaskDispatching
+namespace A.TaskDispatching
 {
     public sealed class ParallelDispatcher(IEnumerable<SchedulerTask> tasks)
     {

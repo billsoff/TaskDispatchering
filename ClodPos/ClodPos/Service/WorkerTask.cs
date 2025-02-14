@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Text;
 
-using TaskDispatching;
+using A.TaskDispatching;
 
-namespace ClodPos.Service;
+namespace A.UI.Service;
 
 internal class WorkerTask(string name, string command, string arguments) : ITask
 {
