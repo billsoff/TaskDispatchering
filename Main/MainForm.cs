@@ -1,10 +1,7 @@
+using A.TaskDispatching;
 using A.UI.Service;
 
-using IpcSessions;
-
 using System.Data;
-
-using A.TaskDispatching;
 
 namespace A.UI
 {
@@ -64,10 +61,10 @@ namespace A.UI
             BeginInvoke(() => btnExecute.Enabled = true);
         }
 
-        private void OnSessionProgressMessageReceived(object sender, ProgressMessageReceivedEventArgs e)
-        {
-            BeginInvoke(() => UpdateProgress(e.Message));
-        }
+        //private void OnSessionProgressMessageReceived(object sender, ProgressMessageReceivedEventArgs e)
+        //{
+        //    BeginInvoke(() => UpdateProgress(e.Message));
+        //}
 
         private void UpdateStatus(SchedulerTask task, SchedulerTaskStatus newStatus)
         {
@@ -83,23 +80,23 @@ namespace A.UI
             UpdateLog(item);
         }
 
-        private void UpdateProgress(ProgressMessage message)
-        {
-            ListViewItem item = lvTasks.Items
-                                .Cast<ListViewItem>()
-                                .Where(i => ((SchedulerTask)i.Tag).Name == message.From &&
-                                            ((SchedulerTask)i.Tag).Status != SchedulerTaskStatus.Waiting &&
-                                            ((SchedulerTask)i.Tag).Status != SchedulerTaskStatus.Succeeded &&
-                                            ((SchedulerTask)i.Tag).Status != SchedulerTaskStatus.Failed)
-                                .FirstOrDefault();
+        //private void UpdateProgress(ProgressMessage message)
+        //{
+        //    ListViewItem item = lvTasks.Items
+        //                        .Cast<ListViewItem>()
+        //                        .Where(i => ((SchedulerTask)i.Tag).Name == message.From &&
+        //                                    ((SchedulerTask)i.Tag).Status != SchedulerTaskStatus.Waiting &&
+        //                                    ((SchedulerTask)i.Tag).Status != SchedulerTaskStatus.Succeeded &&
+        //                                    ((SchedulerTask)i.Tag).Status != SchedulerTaskStatus.Failed)
+        //                        .FirstOrDefault();
 
-            if (item == null)
-            {
-                return;
-            }
+        //    if (item == null)
+        //    {
+        //        return;
+        //    }
 
-            item.SubItems[4].Text = $"{message.Timestamp:HH:mm:ss} {message.CurrentStep}/{message.TotalSteps}: {message.Name}";
-        }
+        //    item.SubItems[4].Text = $"{message.Timestamp:HH:mm:ss} {message.CurrentStep}/{message.TotalSteps}: {message.Name}";
+        //}
 
         private ListViewItem FindItemByTask(SchedulerTask task)
         {
