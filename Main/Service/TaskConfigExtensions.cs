@@ -1,72 +1,71 @@
 ﻿using A.TaskDispatching;
 
-namespace A.UI.Service
+namespace A.UI.Service;
+
+internal static class TaskConfigExtensions
 {
-    internal static class TaskConfigExtensions
+    public static TaskDispatcher BuildTaskDispatcher(this TaskConfig taskConfig)
     {
-        public static TaskDispatcher BuildTaskDispatcher(this TaskConfig taskConfig)
+        if (taskConfig.Tasks.Length == 0)
         {
-            List<SchedulerTask> taskQueue = [];
-            List<PrimitiveSchedulerTask> primitiveTasks = [];
-
-            List<PrimitiveSchedulerTask> group = [];
-
-            foreach (TaskItem item in taskConfig.Tasks.OrderBy(t => t.Number))
-            {
-                PrimitiveSchedulerTask primitiveTask = BuildTask(item);
-                primitiveTasks.Add(primitiveTask);
-
-                if (group.Count != 0 && item.ShouldWait)
-                {
-                    if (group.Count == 1)
-                    {
-                        taskQueue.Add(group[0]);
-                    }
-                    else
-                    {
-                        taskQueue.Add(new ParallelCompositeSchedulerTask(group.Cast<SchedulerTask>().ToList()));
-                    }
-
-                    group = [];
-                }
-
-                group.AddRange(primitiveTasks);
-            }
-
-            if (group.Count != 0)
-            {
-                if (group.Count == 1)
-                {
-                    taskQueue.Add(group[0]);
-                }
-                else
-                {
-                    taskQueue.Add(new ParallelCompositeSchedulerTask(group.Cast<SchedulerTask>().ToList()));
-                }
-            }
-
-            return new TaskDispatcher(taskQueue, primitiveTasks);
+            throw new ArgumentException(message: "应至少指定一个任务", paramName: nameof(taskConfig));
         }
 
-        private static PrimitiveSchedulerTask BuildTask(TaskItem item)
+        List<SchedulerTask> taskQueue = [];
+        List<PrimitiveSchedulerTask> primitiveTasks = [];
+
+        List<PrimitiveSchedulerTask> group = [];
+
+        foreach (TaskItem item in taskConfig.Tasks.OrderBy(t => t.Number))
         {
-            return ConstructWorker().ArrangeScheduler(item.Number, item.RunNextOnFailed);
+            PrimitiveSchedulerTask primitiveTask = BuildTask(item);
+            primitiveTasks.Add(primitiveTask);
 
+            // 当本条任务需要等待前一条任务时，生成一个组
+            if (item.ShouldWait && group.Count != 0)
+            {
+                taskQueue.Add(BuildGroup(ref group));
+            }
 
-            WorkerTask ConstructWorker() =>
-                new(
-                        item.Name,
-                        command: ComposeDemoPath(item.LocalPath),
-                        arguments: item.Arguments
-                    );
-
-            // Demo
-            static string ComposeDemoPath(string localPath) =>
-                Path.Combine(
-                        AppDomain.CurrentDomain.BaseDirectory,
-                        @"..\..\..\..\..\Mock\bin\Debug\net8.0-windows\",
-                        localPath
-                    );
+            group.Add(primitiveTask);
         }
+
+        taskQueue.Add(BuildGroup(ref group));
+
+        return new TaskDispatcher(taskQueue, primitiveTasks);
+
+
+        static SchedulerTask BuildGroup(ref List<PrimitiveSchedulerTask> group)
+        {
+            SchedulerTask schedulerTask = group.Count == 1
+                                          ? group[0]
+                                          : new ParallelCompositeSchedulerTask(group);
+
+            // 创建一个新的组
+            group = [];
+
+            return schedulerTask;
+        }
+    }
+
+    private static PrimitiveSchedulerTask BuildTask(TaskItem item)
+    {
+        return ConstructWorker().ArrangeScheduler(item.Number, item.RunNextOnFailed);
+
+
+        WorkerTask ConstructWorker() =>
+            new(
+                    item.Name,
+                    command: ComposeDemoPath(item.LocalPath),
+                    arguments: item.Arguments
+                );
+
+        // Demo
+        static string ComposeDemoPath(string localPath) =>
+            Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    @"..\..\..\..\Mock\bin\Debug\net8.0-windows\",
+                    localPath
+                );
     }
 }

@@ -1,25 +1,17 @@
 ﻿namespace A.TaskDispatching
 {
-    public sealed class ParallelCompositeSchedulerTask(IList<SchedulerTask> schedulerTasks)
-        : CompositeSchedulerTask(schedulerTasks)
+    public sealed class ParallelCompositeSchedulerTask(IList<PrimitiveSchedulerTask> primitiveSchedulerTasks)
+        : CompositeSchedulerTask(primitiveSchedulerTasks)
     {
         public override SchedulerTaskStatus Status => LastSchedulerTask.Status;
 
         public override bool RunNextOnFailed => LastSchedulerTask.RunNextOnFailed;
 
-        public override Task ExecuteAsync(out IList<Task> remainderTasks)
+        public override Task ExecuteAsync(List<Task> remainderTaskCollector)
         {
-            List<Task> all = [];
+            List<Task> all = PrimitiveSchedulerTasks.Select(t => t.ExecuteAsync()).ToList();
 
-            foreach (SchedulerTask schedulerTask in SchedulerTasks)
-            {
-                Task currentTask = schedulerTask.ExecuteAsync(out IList<Task> others);
-
-                all.AddRange(others);
-                all.Add(currentTask);
-            }
-
-            remainderTasks = all[0..^1];
+            remainderTaskCollector.AddRange(all[0..^1]);
 
             return all[^1];
         }
@@ -28,7 +20,7 @@
         {
             bool hasAtOneSet = false;
 
-            foreach (SchedulerTask schedulerTask in SchedulerTasks)
+            foreach (SchedulerTask schedulerTask in PrimitiveSchedulerTasks)
             {
                 bool result = schedulerTask.Pending();
 
@@ -41,6 +33,6 @@
             return hasAtOneSet;
         }
 
-        public SchedulerTask LastSchedulerTask => SchedulerTasks[^1];
+        public SchedulerTask LastSchedulerTask => PrimitiveSchedulerTasks[^1];
     }
 }

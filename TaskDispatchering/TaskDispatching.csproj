@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <AssemblyName>A.TaskDispatching</AssemblyName>
+    <RootNamespace>A.TaskDispatching</RootNamespace>
   </PropertyGroup>
 
 </Project>

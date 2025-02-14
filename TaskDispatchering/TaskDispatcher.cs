@@ -33,8 +33,7 @@ public sealed class TaskDispatcher
         {
             index++;
 
-            await schedulerTask.ExecuteAsync(out IList<Task> remainderTasks);
-            allRemainderTasks.AddRange(remainderTasks);
+            await schedulerTask.ExecuteAsync(allRemainderTasks);
 
             bool canRunNext = schedulerTask.CanRunNext();
 
