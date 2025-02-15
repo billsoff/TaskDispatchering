@@ -48,38 +48,25 @@ public sealed class TaskDispatcher
     /// <returns></returns>
     public async Task ExecuteAsync()
     {
-        int index = -1;
         List<Task> allRemainderTasks = [];
+        bool canRunNext = true;
 
         foreach (SchedulerTask schedulerTask in TaskQueue)
         {
-            index++;
-
-            await schedulerTask.ExecuteAsync(allRemainderTasks);
-
-            bool canRunNext = schedulerTask.CanRunNext();
-
-            if (canRunNext)
+            if (!canRunNext)
             {
+                schedulerTask.Pending();
+
                 continue;
             }
 
-            PendingRemainderTasks(index + 1);
-
-            break;
+            await schedulerTask.ExecuteAsync(allRemainderTasks);
+            canRunNext = schedulerTask.CanRunNext();
         }
 
         await Task.WhenAll(allRemainderTasks);
 
         Completed?.Invoke(this, EventArgs.Empty);
-    }
-
-    private void PendingRemainderTasks(int startIndex)
-    {
-        for (int i = startIndex; i < TaskQueue.Count; i++)
-        {
-            TaskQueue[i].Pending();
-        }
     }
 
     private void OnTaskStatusChanged(object sender, SchedulerTaskStatusChangedEventArgs e)
