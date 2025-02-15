@@ -1,5 +1,4 @@
-﻿using System.Runtime.Serialization;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
 namespace A.UI.Service;
 
@@ -48,5 +47,7 @@ public sealed class TaskItem
     public bool ShouldWait { get; set; }
 
     [XmlAttribute("runNextOnFailed")]
-    public bool RunNextOnFailed { get; set; }    
+    public bool RunNextOnFailed { get; set; }
+
+    public override string ToString() => Name;
 }

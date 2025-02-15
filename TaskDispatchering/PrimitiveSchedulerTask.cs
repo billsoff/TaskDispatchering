@@ -70,6 +70,8 @@ public class PrimitiveSchedulerTask : SchedulerTask
         return true;
     }
 
+    public override string ToString() => Name;
+
     private void OnWorkerStarting(object sender, TaskStartingEventArgs e)
     {
         Log.Add(BuildLog(e.Timestamp, "Starting..."));

@@ -4,10 +4,10 @@ public abstract class CompositeSchedulerTask : SchedulerTask
 {
     public CompositeSchedulerTask(IList<PrimitiveSchedulerTask> schedulerTasks)
     {
-        if (schedulerTasks.Count < 2)
+        if (schedulerTasks.Count == 0)
         {
             throw new ArgumentException(
-                    message: "任务必须多于2个。", 
+                    message: "至少应包含1个任务。", 
                     paramName: nameof(schedulerTasks)
                 );
         }
@@ -16,4 +16,6 @@ public abstract class CompositeSchedulerTask : SchedulerTask
     }
 
     public IList<PrimitiveSchedulerTask> PrimitiveSchedulerTasks { get; }
+
+    public override string ToString() => string.Join(", ", PrimitiveSchedulerTasks);
 }

@@ -37,9 +37,7 @@ internal static class TaskConfigExtensions
 
         static SchedulerTask BuildGroup(ref List<PrimitiveSchedulerTask> group)
         {
-            SchedulerTask schedulerTask = group.Count == 1
-                                          ? group[0]
-                                          : new ParallelCompositeSchedulerTask(group);
+            SchedulerTask schedulerTask = new ParallelCompositeSchedulerTask(group);
 
             // 创建一个新的组
             group = [];
