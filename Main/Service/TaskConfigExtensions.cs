@@ -43,6 +43,14 @@ public static class TaskConfigExtensions
 
         static SchedulerTask BuildGroup(ref List<PrimitiveSchedulerTask> group)
         {
+            group[0].Delay = TimeSpan.FromSeconds(2);
+
+            for (int i = 1; i < group.Count; i++)
+            {
+                // 后续任务延迟 5 秒启动
+                group[i].Delay = TimeSpan.FromSeconds(5 * i);
+            }
+
             SchedulerTask schedulerTask = new ParallelCompositeSchedulerTask(group);
 
             // 创建一个新的组

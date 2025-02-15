@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <shopRow />
+  <tasks>
+    <task name="A" number="1" shouldWait="false" runNextOnFailed ="true" localPath="Mock.exe" args="" />
+    <task name="B" number="2" shouldWait="false" runNextOnFailed ="true" localPath="Mock.exe" args="" />
+    <task name="C" number="3" shouldWait="false" runNextOnFailed ="true" localPath="Mock.exe" args="" />
+    <task name="D" number="4" shouldWait="false" runNextOnFailed ="true" localPath="Mock.exe" args="" />
+    <task name="E" number="5" shouldWait="false" runNextOnFailed ="true" localPath="Mock.exe" args="" />
+    <task name="F" number="6" shouldWait="false" runNextOnFailed ="true" localPath="Mock.exe" args="" />
+    <task name="G" number="7" shouldWait="false" runNextOnFailed ="true" localPath="Mock.exe" args="" />
+    <task name="H" number="8" shouldWait="false" runNextOnFailed ="true" localPath="Mock.exe" args="" />
+  </tasks>
+</root>

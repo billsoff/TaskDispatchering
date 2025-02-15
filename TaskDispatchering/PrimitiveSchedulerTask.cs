@@ -12,18 +12,24 @@ public class PrimitiveSchedulerTask : SchedulerTask
         Number = number;
         RunNextOnFailed = runNextOnFailed;
 
+        task.Created += OnTaskCreated;
         task.Starting += OnWorkerStarting;
         task.ReportStatus += OnTaskReportStatus;
         task.Completed += OnWorkerCompleted;
     }
 
     /// <summary>
-    /// 任务状态变化事件。
+    /// 任务创建完成事件
+    /// </summary>
+    public event EventHandler<SchedulerTaskCreatedEventArgs> TaskCreated;
+
+    /// <summary>
+    /// 任务状态变化事件
     /// </summary>
     public event EventHandler<SchedulerTaskStatusChangedEventArgs> TaskStatusChanged;
 
     /// <summary>
-    /// 任务进度报告事件。
+    /// 任务进度报告事件
     /// </summary>
     public event EventHandler<SchedulerTaskProgressReportedEventArgs> TaskProgressReported;
 
@@ -41,6 +47,11 @@ public class PrimitiveSchedulerTask : SchedulerTask
     /// 任务编号。
     /// </summary>
     public override int Number { get; }
+
+    /// <summary>
+    /// 延迟
+    /// </summary>
+    public TimeSpan Delay { get; set; }
 
     private SchedulerTaskStatus _status;
 
@@ -87,6 +98,11 @@ public class PrimitiveSchedulerTask : SchedulerTask
     /// <returns></returns>
     public async Task ExecuteAsync()
     {
+        if (Delay > TimeSpan.Zero)
+        {
+            await Task.Delay(Delay);
+        }
+
         try
         {
             await Worker.ExecuteAsync();
@@ -117,6 +133,12 @@ public class PrimitiveSchedulerTask : SchedulerTask
     }
 
     public override string ToString() => Name;
+
+    private void OnTaskCreated(object sender, TaskCreatedEventArgs e)
+    {
+        Log.Add(BuildLog(e.Timestamp, "Task created."));
+        TaskCreated?.Invoke(this, new SchedulerTaskCreatedEventArgs(e.Timestamp, this));
+    }
 
     private void OnWorkerStarting(object sender, TaskStartingEventArgs e)
     {

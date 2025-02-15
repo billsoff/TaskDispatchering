@@ -9,6 +9,15 @@ WriteLine();
 (TaskDispatcher Dispatcher, string FileName, string Config)[] dispatcherInfoItems = LoadTaskDispatchers();
 TaskDispatcher[] allDispatchers = dispatcherInfoItems.Select(item => item.Dispatcher).ToArray();
 
+foreach (TaskDispatcher dispatcher in allDispatchers)
+{
+    dispatcher.TaskCreated += OnDispatcherTaskCreated;
+}
+
+await Task.WhenAll(allDispatchers.Select(d => d.CreateTasksAsync()));
+
+WriteLine();
+
 Task[] tasks = dispatcherInfoItems
                .Select(item => item.Dispatcher.ExecuteAsync())
                .ToArray();
@@ -33,6 +42,15 @@ WriteLine();
 WriteLine("Test completed.");
 WriteLine();
 
+
+void OnDispatcherTaskCreated(object sender, SchedulerTaskCreatedEventArgs e)
+{
+    TaskDispatcher dispatcher = (TaskDispatcher)sender;
+    int index = Array.IndexOf(allDispatchers, dispatcher);
+    var (_, FileName, _) = dispatcherInfoItems[index];
+
+    WriteLine("{0} - {1} created.", Path.GetFileName(FileName), e.Task.Name);
+}
 
 void OnDispatcherCompleted(object sender, EventArgs e)
 {
@@ -97,6 +115,67 @@ static void GenerateTestResults((TaskDispatcher Dispatcher, string FileName, str
 }
 
 static void OutputSchedulerTasks(TaskDispatcher dispatcher, StreamWriter writer)
+{
+    OutputSummary(dispatcher, writer);
+    OutputDetail(dispatcher, writer);
+}
+
+static void OutputSummary(TaskDispatcher dispatcher, StreamWriter writer)
+{
+    IList<string> log;
+    string ruler = string.Empty.PadRight(140, '-');
+
+    writer.WriteLine(ruler);
+
+    foreach (CompositeSchedulerTask schedulerTask in dispatcher.TaskQueue.Cast<CompositeSchedulerTask>())
+    {
+        for (int i = 0; i < schedulerTask.PrimitiveSchedulerTasks.Count; i++)
+        {
+            if (i != 0)
+            {
+                writer.Write("  ");
+            }
+
+            PrimitiveSchedulerTask primitive = schedulerTask.PrimitiveSchedulerTasks[i];
+            log = primitive.Log;
+
+            writer.Write("{0}. {1}", primitive.Number, primitive.Name);
+
+            if (log.Count >= 1)
+            {
+                writer.Write(" {0} created.", primitive.Log[0][0..8]);
+            }
+
+            writer.Write(" {0}", primitive.Status.GetDisplayName());
+
+            if (log.Count == 0)
+            {
+                continue;
+            }
+
+            if (log.Count >= 2)
+            {
+                writer.Write(" ({0} - ", primitive.Log[1][0..8]);
+            }
+
+            if (log.Count >= 3)
+            {
+                writer.Write(" {0})", primitive.Log[^1][0..8]);
+            }
+            else if (log.Count >= 2)
+            {
+                writer.Write(")");
+            }
+        }
+
+        writer.WriteLine();
+    }
+
+    writer.WriteLine(ruler);
+    writer.WriteLine();
+}
+
+static void OutputDetail(TaskDispatcher dispatcher, StreamWriter writer)
 {
     string ruler = string.Empty.PadRight(30, '-');
 

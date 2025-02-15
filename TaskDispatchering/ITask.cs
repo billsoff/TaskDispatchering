@@ -6,9 +6,14 @@
 public interface ITask
 {
     /// <summary>
-    /// 任务名称。
+    /// 任务名称
     /// </summary>
     string Name { get; }
+
+    /// <summary>
+    /// 创建任务
+    /// </summary>
+    ITask Create() => this;
 
     /// <summary>
     /// 执行任务
@@ -22,17 +27,22 @@ public interface ITask
     Task ExecuteAsync() => Task.Run(Execute);
 
     /// <summary>
-    /// 启动事件。
+    /// 任务创建事件
+    /// </summary>
+    event EventHandler<TaskCreatedEventArgs> Created;
+
+    /// <summary>
+    /// 启动事件
     /// </summary>
     event EventHandler<TaskStartingEventArgs> Starting;
 
     /// <summary>
-    /// 状态报告事件。
+    /// 状态报告事件
     /// </summary>
     event EventHandler<TaskReportStatusEventArgs> ReportStatus;
 
     /// <summary>
-    /// 任务完成事件。
+    /// 任务完成事件
     /// </summary>
     event EventHandler<TaskCompletedEventArgs> Completed;
 }

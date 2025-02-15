@@ -19,11 +19,26 @@ internal class WorkerTask(string name, string command, string arguments) : ITask
 
     public string Arguments => arguments;
 
+    public event EventHandler<TaskCreatedEventArgs> Created;
     public event EventHandler<TaskStartingEventArgs> Starting;
     public event EventHandler<TaskReportStatusEventArgs> ReportStatus;
     public event EventHandler<TaskCompletedEventArgs> Completed;
 
     private readonly StringBuilder _errorMessage = new();
+
+    private readonly Random _random = new();
+
+    public ITask Create()
+    {
+        Thread.Sleep(
+                TimeSpan.FromSeconds(
+                        Math.Max(1, _random.Next(4))
+                    )
+            );
+        Created?.Invoke(this, new TaskCreatedEventArgs(MinashiDateTime.Now));
+
+        return this;
+    }
 
     public void Execute()
     {
