@@ -1,17 +1,32 @@
-﻿namespace A.TaskDispatching
+﻿namespace A.TaskDispatching;
+
+/// <summary>
+/// 调度任务状态
+/// </summary>
+public enum SchedulerTaskStatus
 {
-    public enum SchedulerTaskStatus
-    {
-        Waiting,
+    /// <summary>
+    /// 待機
+    /// </summary>
+    Waiting,
 
-        Starting,
+    /// <summary>
+    /// 実行中
+    /// </summary>
+    Running,
 
-        Running,
+    /// <summary>
+    /// 正常終了
+    /// </summary>
+    Succeeded,
 
-        Succeeded,
+    /// <summary>
+    /// 異常終了
+    /// </summary>
+    Failed,
 
-        Failed,
-
-        Pending,
-    }
+    /// <summary>
+    /// 中止
+    /// </summary>
+    Pending,
 }

@@ -4,6 +4,12 @@ namespace A.UI.Service;
 
 public static class TaskConfigExtensions
 {
+    /// <summary>
+    /// 从配置文件构建任务执行器(任务总调度)
+    /// </summary>
+    /// <param name="taskConfig"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
     public static TaskDispatcher BuildTaskDispatcher(this TaskConfig taskConfig)
     {
         if (taskConfig.Tasks.Length == 0)

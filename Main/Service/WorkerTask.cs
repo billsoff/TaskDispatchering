@@ -5,6 +5,12 @@ using A.TaskDispatching;
 
 namespace A.UI.Service;
 
+/// <summary>
+/// 工作任务，用于启动进程
+/// </summary>
+/// <param name="name"></param>
+/// <param name="command"></param>
+/// <param name="arguments"></param>
 internal class WorkerTask(string name, string command, string arguments) : ITask
 {
     public string Name => name;

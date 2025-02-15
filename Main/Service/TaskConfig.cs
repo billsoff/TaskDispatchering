@@ -5,6 +5,11 @@ namespace A.UI.Service;
 [XmlRoot("root")]
 public class TaskConfig
 {
+    /// <summary>
+    /// 加载任务配置。
+    /// </summary>
+    /// <param name="reader"></param>
+    /// <returns></returns>
     public static TaskConfig Load(TextReader reader)
     {
         XmlSerializer serializer = new(typeof(TaskConfig));

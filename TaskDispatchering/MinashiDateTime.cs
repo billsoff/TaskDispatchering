@@ -1,5 +1,8 @@
 ﻿namespace A.TaskDispatching
 {
+    /// <summary>
+    /// 可控制时间偏移，用于测试。
+    /// </summary>
     public static class MinashiDateTime
     {
         public static TimeSpan Offset { get; set; }
