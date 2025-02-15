@@ -2,7 +2,7 @@
 
 namespace A.UI.Service;
 
-internal static class TaskConfigExtensions
+public static class TaskConfigExtensions
 {
     public static TaskDispatcher BuildTaskDispatcher(this TaskConfig taskConfig)
     {

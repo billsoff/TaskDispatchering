@@ -3,7 +3,7 @@
   <shopRow />
   <tasks>
     <task name="A" number="1" shouldWait="false" runNextOnFailed ="false" localPath="Mock.exe" args="" />
-    <task name="B" number="2" shouldWait="false" runNextOnFailed ="false" startTime="13:00:00" localPath="Mock.exe" args="" />
+    <task name="B" number="2" shouldWait="false" runNextOnFailed ="false" localPath="Mock.exe" args="" />
     <task name="C" number="3" shouldWait="false" runNextOnFailed ="true" localPath="Mock.exe" args="" />
     <task name="D" number="4" shouldWait="false" runNextOnFailed ="false" localPath="Mock.exe" args="" />
     <task name="E" number="5" shouldWait="true" runNextOnFailed ="true" localPath="Mock.exe" args="-throwError" />
