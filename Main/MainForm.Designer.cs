@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
+            pbTask = new ProgressBar();
             btnClose = new Button();
             btnExecute = new Button();
             splitContainer1 = new SplitContainer();
@@ -48,6 +49,7 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(pbTask);
             panel1.Controls.Add(btnClose);
             panel1.Controls.Add(btnExecute);
             panel1.Dock = DockStyle.Bottom;
@@ -56,6 +58,16 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(724, 42);
             panel1.TabIndex = 0;
+            // 
+            // pbTask
+            // 
+            pbTask.Enabled = false;
+            pbTask.Location = new Point(189, 10);
+            pbTask.Name = "pbTask";
+            pbTask.Size = new Size(511, 23);
+            pbTask.Style = ProgressBarStyle.Marquee;
+            pbTask.TabIndex = 2;
+            pbTask.Visible = false;
             // 
             // btnClose
             // 
@@ -185,5 +197,6 @@
         private ColumnHeader taskStatus;
         private ColumnHeader taskMessage;
         private ColumnHeader taskProgress;
+        private ProgressBar pbTask;
     }
 }

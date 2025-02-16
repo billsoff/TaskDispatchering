@@ -58,7 +58,13 @@ namespace A.UI
 
         private void OnDispatcherCompleted(object sender, EventArgs e)
         {
-            BeginInvoke(() => btnExecute.Enabled = true);
+            BeginInvoke(
+                    () =>
+                    {
+                        btnExecute.Enabled = true;
+                        pbTask.Visible = false;
+                    }
+                );
         }
 
         //private void OnSessionProgressMessageReceived(object sender, ProgressMessageReceivedEventArgs e)
@@ -155,6 +161,7 @@ namespace A.UI
                 lvTasks.Items[0].Selected = true;
 
                 lvTasks.Focus();
+                pbTask.Visible = true;
             }
         }
 
