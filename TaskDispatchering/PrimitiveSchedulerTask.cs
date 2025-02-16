@@ -39,12 +39,12 @@ public class PrimitiveSchedulerTask : SchedulerTask
     public ITask Worker { get; }
 
     /// <summary>
-    /// 任务名称。
+    /// 任务名称
     /// </summary>
     public override string Name => Worker.Name;
 
     /// <summary>
-    /// 任务编号。
+    /// 任务编号
     /// </summary>
     public override int Number { get; }
 
@@ -56,7 +56,7 @@ public class PrimitiveSchedulerTask : SchedulerTask
     private SchedulerTaskStatus _status;
 
     /// <summary>
-    /// 任务状态。
+    /// 任务状态
     /// </summary>
     public override SchedulerTaskStatus Status
     {
@@ -64,24 +64,24 @@ public class PrimitiveSchedulerTask : SchedulerTask
     }
 
     /// <summary>
-    /// 任务执行日志。
+    /// 任务执行日志
     /// </summary>
     public IList<string> Log { get; } = [];
 
     /// <summary>
-    /// 错误。
+    /// 错误
     /// </summary>
     public Exception Error { get; private set; }
 
     private string _errorMessage;
 
     /// <summary>
-    /// 错误消息。
+    /// 错误消息
     /// </summary>
     public string ErrorMessage => _errorMessage ?? Error?.ToString();
 
     /// <summary>
-    /// 当本条任务失败进，是否执行下条任务。
+    /// 当本条任务失败时，是否执行下条任务。
     /// </summary>
     public override bool RunNextOnFailed { get; }
 

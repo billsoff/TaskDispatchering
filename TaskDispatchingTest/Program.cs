@@ -1,5 +1,5 @@
 ﻿using A.TaskDispatching;
-using A.UI.Service;
+using A.TaskDispatchingTest;
 
 using static System.Console;
 
@@ -160,7 +160,7 @@ static void OutputSummary(TaskDispatcher dispatcher, StreamWriter writer)
 
             if (log.Count >= 3)
             {
-                writer.Write(" {0})", primitive.Log[^1][0..8]);
+                writer.Write("{0})", primitive.Log[^1][0..8]);
             }
             else if (log.Count >= 2)
             {

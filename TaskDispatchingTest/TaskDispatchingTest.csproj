@@ -9,7 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Main\Main.csproj" />
     <ProjectReference Include="..\TaskDispatchering\TaskDispatching.csproj" />
   </ItemGroup>
 
