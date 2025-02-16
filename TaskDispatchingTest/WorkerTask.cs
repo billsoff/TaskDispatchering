@@ -11,34 +11,35 @@ namespace A.TaskDispatchingTest;
 /// <param name="name"></param>
 /// <param name="command"></param>
 /// <param name="arguments"></param>
-internal class WorkerTask(string name, string command, string arguments) : ITask
+internal class WorkerTask : ITask
 {
-    public string Name => name;
+    public WorkerTask(string name, string command, string arguments, int delaySeconds = 2)
+    {
+        Name = name;
+        Command = command;
+        Arguments = arguments;
 
-    public string Command => command;
+        if (delaySeconds > 0)
+        {
+            Thread.Sleep(delaySeconds * 1000);
+        }
 
-    public string Arguments => arguments;
+        CreationTime = MinashiDateTime.Now;
+    }
 
-    public event EventHandler<TaskCreatedEventArgs> Created;
+    public string Name { get; }
+
+    public string Command { get; }
+
+    public string Arguments { get; }
+
+    public DateTimeOffset CreationTime { get; }
+
     public event EventHandler<TaskStartingEventArgs> Starting;
     public event EventHandler<TaskReportStatusEventArgs> ReportStatus;
     public event EventHandler<TaskCompletedEventArgs> Completed;
 
     private readonly StringBuilder _errorMessage = new();
-
-    private readonly Random _random = new();
-
-    public ITask Create()
-    {
-        Thread.Sleep(
-                TimeSpan.FromSeconds(
-                        Math.Max(1, _random.Next(4))
-                    )
-            );
-        Created?.Invoke(this, new TaskCreatedEventArgs(MinashiDateTime.Now));
-
-        return this;
-    }
 
     public void Execute()
     {

@@ -11,9 +11,9 @@ public interface ITask
     string Name { get; }
 
     /// <summary>
-    /// 创建任务
+    /// 创建时间
     /// </summary>
-    ITask Create() => this;
+    public DateTimeOffset CreationTime => MinashiDateTime.Now;
 
     /// <summary>
     /// 执行任务
@@ -25,11 +25,6 @@ public interface ITask
     /// </summary>
     /// <returns></returns>
     Task ExecuteAsync() => Task.Run(Execute);
-
-    /// <summary>
-    /// 任务创建事件
-    /// </summary>
-    event EventHandler<TaskCreatedEventArgs> Created;
 
     /// <summary>
     /// 启动事件

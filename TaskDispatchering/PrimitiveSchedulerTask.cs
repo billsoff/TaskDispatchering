@@ -8,20 +8,15 @@ public class PrimitiveSchedulerTask : SchedulerTask
     public PrimitiveSchedulerTask(ITask task, int number, bool runNextOnFailed)
     {
         Worker = task;
+        CreationTime = task.CreationTime;
 
         Number = number;
         RunNextOnFailed = runNextOnFailed;
 
-        task.Created += OnTaskCreated;
         task.Starting += OnWorkerStarting;
         task.ReportStatus += OnTaskReportStatus;
         task.Completed += OnWorkerCompleted;
     }
-
-    /// <summary>
-    /// 任务创建完成事件
-    /// </summary>
-    public event EventHandler<SchedulerTaskCreatedEventArgs> TaskCreated;
 
     /// <summary>
     /// 任务状态变化事件
@@ -47,6 +42,11 @@ public class PrimitiveSchedulerTask : SchedulerTask
     /// 任务编号
     /// </summary>
     public override int Number { get; }
+
+    /// <summary>
+    /// 工作任务创建时间
+    /// </summary>
+    public DateTimeOffset CreationTime { get; } 
 
     /// <summary>
     /// 延迟
@@ -134,12 +134,7 @@ public class PrimitiveSchedulerTask : SchedulerTask
 
     public override string ToString() => Name;
 
-    private void OnTaskCreated(object sender, TaskCreatedEventArgs e)
-    {
-        Log.Add(BuildLog(e.Timestamp, "Task created."));
-        TaskCreated?.Invoke(this, new SchedulerTaskCreatedEventArgs(e.Timestamp, this));
-    }
-
+    // WorkerTask 事件传递到外部
     private void OnWorkerStarting(object sender, TaskStartingEventArgs e)
     {
         Log.Add(BuildLog(e.Timestamp, "Starting..."));

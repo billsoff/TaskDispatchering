@@ -27,15 +27,16 @@ public static class TaskConfigExtensions
             PrimitiveSchedulerTask primitiveTask = BuildTask(item, taskConfig);
             primitiveTasks.Add(primitiveTask);
 
-            // 当本条任务需要等待前一条任务时，生成一个组
+            // 当本条任务需要等待前一条任务时，生成一个组.  group.Count != 0 第一条不参与分组
             if (item.ShouldWait && group.Count != 0)
             {
+                // 需要等待的。 ref内部修改会传到外部
                 taskQueue.Add(BuildGroup(ref group));
             }
 
             group.Add(primitiveTask);
         }
-
+        // 最后一组
         taskQueue.Add(BuildGroup(ref group));
 
         return new TaskDispatcher(taskQueue, primitiveTasks);
