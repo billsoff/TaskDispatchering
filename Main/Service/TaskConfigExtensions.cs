@@ -24,7 +24,7 @@ public static class TaskConfigExtensions
 
         foreach (TaskItem item in taskConfig.Tasks.OrderBy(t => t.Number))
         {
-            PrimitiveSchedulerTask primitiveTask = BuildTask(item);
+            PrimitiveSchedulerTask primitiveTask = BuildTask(item, taskConfig);
             primitiveTasks.Add(primitiveTask);
 
             // 当本条任务需要等待前一条任务时，生成一个组
@@ -60,7 +60,7 @@ public static class TaskConfigExtensions
         }
     }
 
-    private static PrimitiveSchedulerTask BuildTask(TaskItem item)
+    private static PrimitiveSchedulerTask BuildTask(TaskItem item, TaskConfig taskConfig)
     {
         return ConstructWorker().ArrangeScheduler(item.Number, item.RunNextOnFailed);
 
@@ -69,14 +69,14 @@ public static class TaskConfigExtensions
             new(
                     item.Name,
                     command: ComposeDemoPath(item.LocalPath),
-                    arguments: item.Arguments
+                    argument: item.GetTaskArgument(taskConfig)
                 );
 
         // Demo
         static string ComposeDemoPath(string localPath) =>
             Path.Combine(
                     AppDomain.CurrentDomain.BaseDirectory,
-                    @"..\..\..\..\Mock\bin\Debug\net8.0-windows\",
+                    @"..\..\..\..\Mock2\bin\Debug\net8.0-windows\",
                     localPath
                 );
     }

@@ -10,14 +10,14 @@ namespace A.UI.Service;
 /// </summary>
 /// <param name="name"></param>
 /// <param name="command"></param>
-/// <param name="arguments"></param>
-internal class WorkerTask(string name, string command, string arguments) : ITask
+/// <param name="argument"></param>
+internal class WorkerTask(string name, string command, string argument) : ITask
 {
     public string Name => name;
 
     public string Command => command;
 
-    public string Arguments => arguments;
+    public string Argument => argument;
 
     public event EventHandler<TaskCreatedEventArgs> Created;
     public event EventHandler<TaskStartingEventArgs> Starting;
@@ -59,7 +59,7 @@ internal class WorkerTask(string name, string command, string arguments) : ITask
         ProcessStartInfo startInfo = process.StartInfo;
 
         startInfo.FileName = Command;
-        startInfo.Arguments = Arguments;
+        startInfo.ArgumentList.Add(argument);
 
         startInfo.CreateNoWindow = true;
         startInfo.UseShellExecute = false;
