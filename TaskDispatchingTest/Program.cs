@@ -136,7 +136,7 @@ static void OutputSummary(TaskDispatcher dispatcher, StreamWriter writer)
 
             if (log.Count >= 1)
             {
-                writer.Write(" ({0} - ", primitive.Log[1][0..8]);
+                writer.Write(" ({0} - ", primitive.Log[0][0..8]);
             }
 
             if (log.Count >= 2)
