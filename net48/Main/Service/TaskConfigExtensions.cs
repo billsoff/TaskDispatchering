@@ -26,15 +26,15 @@ namespace A.UI.Service
             List<PrimitiveSchedulerTask> primitiveTasks = new List<PrimitiveSchedulerTask>();
 
             List<PrimitiveSchedulerTask> group = new List<PrimitiveSchedulerTask>();
-            bool runOnPreviousCompleted = true;
+            bool runOnPreviousCompleted = false; // 第一条不参与分组
 
             foreach (TaskItem item in taskConfig.Tasks.OrderBy(t => t.Number))
             {
                 PrimitiveSchedulerTask primitiveTask = BuildTask(item, taskConfig);
                 primitiveTasks.Add(primitiveTask);
 
-                // 当本条任务需要等待前一条任务时，生成一个组.  group.Count != 0 第一条不参与分组
-                if (runOnPreviousCompleted && group.Count != 0)
+                // 当本条任务需要等待前一条任务时，生成一个组. 第一条不参与分组
+                if (runOnPreviousCompleted)
                 {
                     // 需要等待的。 ref内部修改会传到外部
                     taskQueue.Add(BuildGroup(ref group));

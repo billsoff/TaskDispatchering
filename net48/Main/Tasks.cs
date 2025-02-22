@@ -550,8 +550,8 @@ namespace A.TaskDispatching
         {
             string ruler = string.Empty.PadRight(80, '-');
 
+            writer.WriteLine(ruler);
             writer.WriteLine(Config);
-            writer.WriteLine();
 
             OutputSchedulerTasks(Dispatcher, writer);
 
