@@ -31,6 +31,11 @@ namespace Mock2
 
             Log.Information("[{MyName} {ProcessId}] starting...", myName, processId);
 
+            if (random.Next(5) == 0)
+            {
+                throw new InvalidOperationException("Oop!");
+            }
+
             Thread.Sleep(1000 * Math.Max(2, random.Next(6)));
 
             Log.Information("[{MyName} {ProcessId}] completed.", myName, processId);

@@ -54,7 +54,11 @@ namespace A.UI
 
             btnExecute.Enabled = false;
 
-            await dispatcher.ExecuteAsync();
+            Task schedulerTask = dispatcher.ExecuteAsync();
+            await Task.Delay(8);
+            Task svmTask = Task.Run(StartProcess);
+
+            await Task.WhenAll(schedulerTask, svmTask);
 
             Log.Information("[Main {ProcessId}] Tasks completed.", processId);
             Log.Information(
@@ -195,6 +199,20 @@ namespace A.UI
             StreamReader reader = new StreamReader(path);
 
             return reader.ReadToEnd();
+        }
+
+        private static void StartProcess()
+        {
+            Process process = new Process();
+            ProcessStartInfo startInfo = process.StartInfo;
+
+            startInfo.FileName = Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    @"..\..\..\MessageSenderMock\bin\Debug\MessageSenderMock.exe"
+                );
+
+            process.Start();
+            process.WaitForExit();
         }
     }
 }

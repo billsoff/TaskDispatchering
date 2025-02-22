@@ -12,7 +12,7 @@ namespace MessageSenderMock
         {
             Console.WriteLine("SWM started.");
 
-            const int TIMES = 30;
+            const int TIMES = 14;
             Random random = new Random();
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
 

@@ -16,7 +16,6 @@ namespace A.UI
         [STAThread]
         static void Main()
         {
-            _ = Task.Run(StartProcess);
             LogService.LoadConfiguration();
 
             Application.EnableVisualStyles();
@@ -24,20 +23,6 @@ namespace A.UI
             Application.Run(new MainForm());
 
             LogService.Close();
-        }
-
-        private static void StartProcess()
-        {
-            Process process = new Process();
-            ProcessStartInfo startInfo = process.StartInfo;
-
-            startInfo.FileName = Path.Combine(
-                    AppDomain.CurrentDomain.BaseDirectory,
-                    @"..\..\..\MessageSenderMock\bin\Debug\MessageSenderMock.exe"
-                );
-
-            process.Start();
-            process.WaitForExit();
         }
     }
 }
