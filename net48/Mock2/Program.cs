@@ -1,5 +1,6 @@
 ﻿using A.UI.Service;
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using Serilog;
@@ -22,8 +23,11 @@ namespace Mock2
             Random random = new Random();
 
             // 接收 JSON 参数
-            //Console.WriteLine("Accept arguments:");
-            //Console.WriteLine(args[0]);
+            if (args.Length == 1)
+            {
+                Console.WriteLine("Accept arguments:");
+                Console.WriteLine(JToken.Parse(args[0]).ToString(Formatting.None));
+            }
 
             Log.Information("[{MyName} {ProcessId}] starting...", myName, processId);
 
