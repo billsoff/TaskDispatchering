@@ -1,4 +1,6 @@
-﻿using System;
+﻿using A.UI.Service;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -89,9 +91,19 @@ namespace A.TaskDispatching
         /// <param name="number"></param>
         /// <param name="runNextOnFailed"></param>
         /// <returns></returns>
-        public static PrimitiveSchedulerTask ArrangeScheduler(this ITask worker, int number, bool runNextOnFailed)
+        public static PrimitiveSchedulerTask ArrangeScheduler(
+                this ITask worker,
+                int number,
+                bool runNextOnFailed,
+                TaskItem configuration
+            )
         {
-            return new PrimitiveSchedulerTask(worker, number, runNextOnFailed);
+            return new PrimitiveSchedulerTask(
+                    worker,
+                    number,
+                    runNextOnFailed,
+                    configuration
+                );
         }
     }
 
@@ -113,6 +125,11 @@ namespace A.TaskDispatching
         /// 任务编号
         /// </summary>
         public virtual int Number { get; }
+
+        /// <summary>
+        /// 配置项
+        /// </summary>
+        public TaskItem Configuration { get; protected set; }
 
         /// <summary>
         /// 获取任务状态。
@@ -170,10 +187,12 @@ namespace A.TaskDispatching
     /// </summary>
     public class PrimitiveSchedulerTask : SchedulerTask
     {
-        public PrimitiveSchedulerTask(ITask task, int number, bool runNextOnFailed)
+        public PrimitiveSchedulerTask(ITask task, int number, bool runNextOnFailed, TaskItem configuration)
         {
             Worker = task;
             CreationTime = task.CreationTime;
+
+            Configuration = configuration;
 
             Number = number;
             RunNextOnFailed = runNextOnFailed;
@@ -398,7 +417,7 @@ namespace A.TaskDispatching
         {
             List<Task> all = PrimitiveSchedulerTasks.Select(t => t.ExecuteAsync()).ToList();
 
-            remainderTaskCollector.AddRange(all.Where((_, index) => index < all.Count -1));
+            remainderTaskCollector.AddRange(all.Where((_, index) => index < all.Count - 1));
 
             return all[all.Count - 1];
         }

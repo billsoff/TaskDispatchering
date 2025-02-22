@@ -146,6 +146,7 @@ namespace A.UI
 
             foreach (var primitiveTask in dispatcher.PrimitiveTasks)
             {
+                TaskItem configuration = primitiveTask.Configuration;
                 ListViewItem item = new ListViewItem(
                         new string[]
                         {
@@ -153,7 +154,7 @@ namespace A.UI
                             primitiveTask.Name,
                             primitiveTask.Status.GetDisplayName(),
                             string.Empty,
-                            string.Empty,
+                            $"Specified time: {configuration.SpecifiedTime} Interval time: {configuration.IntervalTime}",
                         }
                     )
                 {
