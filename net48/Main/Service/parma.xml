@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<root>
+  <shopRow memoryMappedFileName="hello" serverUrl="https://myshop.com" installType="1" storeNo="34621" regNo="658" />
+  <tasks>
+    <task name="A" number="1" shouldWait="false" runNextOnFailed ="false" localPath="Mock2.exe" specifiedTime="0930" intervalTime="2" />
+    <task name="B" number="2" shouldWait="false" runNextOnFailed ="false" localPath="Mock2.exe" specifiedTime="1022" intervalTime="3" />
+    <task name="C" number="3" shouldWait="false" runNextOnFailed ="true" localPath="Mock2.exe" specifiedTime="1030" intervalTime="4" />
+    <task name="D" number="4" shouldWait="false" runNextOnFailed ="false" localPath="Mock2.exe" specifiedTime="1115" intervalTime="5" />
+    <task name="E" number="5" shouldWait="true" runNextOnFailed ="true" localPath="Mock2.exe" specifiedTime="1120" intervalTime="6" />
+    <task name="F" number="6" shouldWait="true" runNextOnFailed ="false" localPath="Mock2.exe" specifiedTime="1123" intervalTime="7" />
+    <task name="G" number="7" shouldWait="false" runNextOnFailed ="false" localPath="Mock2.exe" specifiedTime="1129" intervalTime="8" />
+    <task name="H" number="8" shouldWait="true" runNextOnFailed ="false" localPath="Mock2.exe" specifiedTime="1130" intervalTime="9" />
+  </tasks>
+</root>
