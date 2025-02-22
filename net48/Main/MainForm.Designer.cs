@@ -31,6 +31,14 @@ namespace A.UI
         /// </summary>
         private void InitializeComponent()
         {
+            // 
+            // MainForm
+            // 
+            this.ClientSize = new System.Drawing.Size(282, 253);
+            this.Name = "MainForm";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.ResumeLayout(false);
+
             panel1 = new Panel();
             pbTask = new ProgressBar();
             btnClose = new Button();
