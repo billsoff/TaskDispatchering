@@ -45,8 +45,6 @@ namespace A.UI
 
             LoadTasks(dispatcher);
 
-            //using IpcSession session = new(taskConfig.SchedulerProcessName, canBeConnected: true);
-            //session.ProgressMessageReceived += OnSessionProgressMessageReceived;
             _session = new IpcReceiveSession(taskConfig.ShopRow.MemoryMappedFileName);
             _session.DataReceived += OnSessionDataReceived;
             _ = _session.OpenSessionReceiveAsync();
@@ -59,6 +57,23 @@ namespace A.UI
         private void OnSessionDataReceived(object sender, SessionDataReceivedEventArgs e)
         {
             Console.WriteLine("Received data: {0}", e.Data);
+
+            if (e.Data.Contains("11"))
+            {
+                IpcReceiveSession session = (IpcReceiveSession)sender;
+                session.Dispose();
+
+                Console.WriteLine("End session.");
+
+                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "INSTALL_WAIT.txt");
+
+                using (StreamWriter writer = new StreamWriter(path, append: false))
+                {
+                    writer.Write(e.Data);
+                }
+
+                Console.WriteLine("Write to INSTALL_WAIT.txt success!");
+            }
         }
 
         private void OnDispatcherTaskStatusChanged(object sender, SchedulerTaskStatusChangedEventArgs e)
@@ -82,11 +97,6 @@ namespace A.UI
                 );
         }
 
-        //private void OnSessionProgressMessageReceived(object sender, ProgressMessageReceivedEventArgs e)
-        //{
-        //    BeginInvoke(() => UpdateProgress(e.Message));
-        //}
-
         private void UpdateStatus(SchedulerTask task, SchedulerTaskStatus newStatus)
         {
             ListViewItem item = FindItemByTask(task);
@@ -100,24 +110,6 @@ namespace A.UI
 
             UpdateLog(item);
         }
-
-        //private void UpdateProgress(ProgressMessage message)
-        //{
-        //    ListViewItem item = lvTasks.Items
-        //                        .Cast<ListViewItem>()
-        //                        .Where(i => ((SchedulerTask)i.Tag).Name == message.From &&
-        //                                    ((SchedulerTask)i.Tag).Status != SchedulerTaskStatus.Waiting &&
-        //                                    ((SchedulerTask)i.Tag).Status != SchedulerTaskStatus.Succeeded &&
-        //                                    ((SchedulerTask)i.Tag).Status != SchedulerTaskStatus.Failed)
-        //                        .FirstOrDefault();
-
-        //    if (item == null)
-        //    {
-        //        return;
-        //    }
-
-        //    item.SubItems[4].Text = $"{message.Timestamp:HH:mm:ss} {message.CurrentStep}/{message.TotalSteps}: {message.Name}";
-        //}
 
         private ListViewItem FindItemByTask(SchedulerTask task) => lvTasks.Items
                    .Cast<ListViewItem>()
