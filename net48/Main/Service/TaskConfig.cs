@@ -40,7 +40,7 @@ namespace A.UI.Service
     public sealed class ShopRow
     {
         [XmlAttribute("memoryMappedFileName")]
-        public string MemoryMappedIFFileName { get; set; }
+        public string MemoryMappedFileName { get; set; }
 
         [XmlAttribute("serverUrl")]
         public string ServerUrl { get; set; }
@@ -69,9 +69,7 @@ namespace A.UI.Service
                         continue;
                     }
 
-                    XmlAttributeAttribute attr = p.GetCustomAttribute<XmlAttributeAttribute>();
-
-                    _shopArguments.Add(attr.AttributeName, (string)p.GetValue(this));
+                    _shopArguments.Add(p.Name, (string)p.GetValue(this));
                 }
             }
 
@@ -140,9 +138,7 @@ namespace A.UI.Service
                     continue;
                 }
 
-                XmlAttributeAttribute attr = p.GetCustomAttribute<XmlAttributeAttribute>();
-
-                args.Add(attr.AttributeName, (string)p.GetValue(this));
+                args.Add(p.Name, (string)p.GetValue(this));
             }
 
             return args;
