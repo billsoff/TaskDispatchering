@@ -26,6 +26,7 @@ namespace A.TaskDispatchingTest
             List<PrimitiveSchedulerTask> primitiveTasks = new List<PrimitiveSchedulerTask>();
 
             List<PrimitiveSchedulerTask> group = new List<PrimitiveSchedulerTask>();
+            bool runOnPreviousCompleted = true;
 
             foreach (TaskItem item in taskConfig.Tasks.OrderBy(t => t.Number))
             {
@@ -33,13 +34,14 @@ namespace A.TaskDispatchingTest
                 primitiveTasks.Add(primitiveTask);
 
                 // 当本条任务需要等待前一条任务时，生成一个组.  group.Count != 0 第一条不参与分组
-                if (item.ShouldWait && group.Count != 0)
+                if (runOnPreviousCompleted && group.Count != 0)
                 {
                     // 需要等待的。 ref内部修改会传到外部
                     taskQueue.Add(BuildGroup(ref group));
                 }
 
                 group.Add(primitiveTask);
+                runOnPreviousCompleted = item.RunNextOnCompleted;
             }
             // 最后一组
             taskQueue.Add(BuildGroup(ref group));

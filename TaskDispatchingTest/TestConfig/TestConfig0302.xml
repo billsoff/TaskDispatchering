@@ -2,8 +2,8 @@
 <root>
   <shopRow />
   <tasks>
-    <task name="A" number="1" shouldWait="true" runNextOnFailed ="false" localPath="Mock.exe" args="-throwError" />
-    <task name="B" number="2" shouldWait="true" runNextOnFailed ="false" localPath="Mock.exe" args="-throwError" />
-    <task name="C" number="3" shouldWait="true" runNextOnFailed ="false" localPath="Mock.exe" args="-throwError" />
+    <task name="A" number="1" runNextOnCompleted="true" runNextOnFailed ="false" localPath="Mock.exe" args="-throwError" />
+    <task name="B" number="2" runNextOnCompleted="true" runNextOnFailed ="false" localPath="Mock.exe" args="-throwError" />
+    <task name="C" number="3" runNextOnCompleted="true" runNextOnFailed ="false" localPath="Mock.exe" args="-throwError" />
   </tasks>
 </root>

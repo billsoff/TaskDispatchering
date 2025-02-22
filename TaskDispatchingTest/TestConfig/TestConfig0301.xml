@@ -2,17 +2,17 @@
 <root>
   <shopRow />
   <tasks>
-    <task name="A" number="1" shouldWait="false" runNextOnFailed ="false" localPath="Mock.exe" args="" />
-    <task name="B" number="2" shouldWait="false" runNextOnFailed ="false" localPath="Mock.exe" args="-throwError" />
-    <task name="C" number="3" shouldWait="false" runNextOnFailed ="false" localPath="Mock.exe" args="-throwError" />
+    <task name="A" number="1" runNextOnCompleted="false" runNextOnFailed ="false" localPath="Mock.exe" args="" />
+    <task name="B" number="2" runNextOnCompleted="false" runNextOnFailed ="false" localPath="Mock.exe" args="-throwError" />
+    <task name="C" number="3" runNextOnCompleted="false" runNextOnFailed ="false" localPath="Mock.exe" args="-throwError" />
     
-    <task name="D" number="4" shouldWait="false" runNextOnFailed ="true" localPath="Mock.exe" args="-throwError" />
-    <task name="E" number="5" shouldWait="false" runNextOnFailed ="true" localPath="Mock.exe" args="-throwError" />
-    <task name="F" number="6" shouldWait="false" runNextOnFailed ="true" localPath="Mock.exe" args="-throwError" />
+    <task name="D" number="4" runNextOnCompleted="false" runNextOnFailed ="true" localPath="Mock.exe" args="-throwError" />
+    <task name="E" number="5" runNextOnCompleted="false" runNextOnFailed ="true" localPath="Mock.exe" args="-throwError" />
+    <task name="F" number="6" runNextOnCompleted="false" runNextOnFailed ="true" localPath="Mock.exe" args="-throwError" />
 
-    <task name="G" number="7" shouldWait="true" runNextOnFailed ="true" localPath="Mock.exe" args="-throwError" />
-    <task name="H" number="8" shouldWait="true" runNextOnFailed ="false" localPath="Mock.exe" args="-throwError" />
-    <task name="I" number="9" shouldWait="true" runNextOnFailed ="true" localPath="Mock.exe" args="-throwError" />
+    <task name="G" number="7" runNextOnCompleted="true" runNextOnFailed ="true" localPath="Mock.exe" args="-throwError" />
+    <task name="H" number="8" runNextOnCompleted="true" runNextOnFailed ="false" localPath="Mock.exe" args="-throwError" />
+    <task name="I" number="9" runNextOnCompleted="true" runNextOnFailed ="true" localPath="Mock.exe" args="-throwError" />
 
   </tasks>
 </root>

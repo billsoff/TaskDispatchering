@@ -28,7 +28,7 @@ public static class TaskConfigExtensions
             primitiveTasks.Add(primitiveTask);
 
             // 当本条任务需要等待前一条任务时，生成一个组
-            if (item.ShouldWait && group.Count != 0)
+            if (item.RunNextOnCompleted && group.Count != 0)
             {
                 taskQueue.Add(BuildGroup(ref group));
             }

@@ -90,8 +90,8 @@ public sealed class TaskItem
     [XmlAttribute("number")]
     public int Number { get; set; }
 
-    [XmlAttribute("shouldWait")]
-    public bool ShouldWait { get; set; }
+    [XmlAttribute("runNextOnCompleted")]
+    public bool RunNextOnCompleted { get; set; }
 
     [XmlAttribute("runNextOnFailed")]
     public bool RunNextOnFailed { get; set; }
