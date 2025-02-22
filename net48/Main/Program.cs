@@ -1,4 +1,7 @@
 using System;
+using System.Diagnostics;
+using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace A.UI
@@ -11,9 +14,25 @@ namespace A.UI
         [STAThread]
         static void Main()
         {
+            _ = Task.Run(StartProcess);
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm());
+        }
+
+        private static void StartProcess()
+        {
+            Process process = new Process();
+            ProcessStartInfo startInfo = process.StartInfo;
+
+            startInfo.FileName = Path.Combine(
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    @"..\..\..\MessageSenderMock\bin\Debug\MessageSenderMock.exe"
+                );
+
+            process.Start();
+            process.WaitForExit();
         }
     }
 }

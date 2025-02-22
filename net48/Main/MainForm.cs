@@ -12,6 +12,8 @@ namespace A.UI
 {
     public partial class MainForm : Form
     {
+        private IpcReceiveSession _session;
+
         public MainForm()
         {
             InitializeComponent();
@@ -45,10 +47,18 @@ namespace A.UI
 
             //using IpcSession session = new(taskConfig.SchedulerProcessName, canBeConnected: true);
             //session.ProgressMessageReceived += OnSessionProgressMessageReceived;
+            _session = new IpcReceiveSession(taskConfig.ShopRow.MemoryMappedFileName);
+            _session.DataReceived += OnSessionDataReceived;
+            _ = _session.OpenSessionReceiveAsync();
 
             btnExecute.Enabled = false;
 
             await dispatcher.ExecuteAsync();
+        }
+
+        private void OnSessionDataReceived(object sender, SessionDataReceivedEventArgs e)
+        {
+            Console.WriteLine("Received data: {0}", e.Data);
         }
 
         private void OnDispatcherTaskStatusChanged(object sender, SchedulerTaskStatusChangedEventArgs e)
