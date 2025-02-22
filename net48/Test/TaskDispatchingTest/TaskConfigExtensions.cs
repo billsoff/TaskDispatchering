@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace A.UI.Service
+namespace A.TaskDispatchingTest
 {
     public static class TaskConfigExtensions
     {
@@ -67,25 +67,24 @@ namespace A.UI.Service
 
         private static PrimitiveSchedulerTask BuildTask(TaskItem item, TaskConfig taskConfig)
         {
-            return ConstructWorker(item, taskConfig).ArrangeScheduler(item.Number, item.RunNextOnFailed, item);
+            return ConstructWorker(item).ArrangeScheduler(item.Number, item.RunNextOnFailed, null);
         }
 
-        private static WorkerTask ConstructWorker(TaskItem item, TaskConfig taskConfig)
+        private static WorkerTask ConstructWorker(TaskItem item)
         {
             return new WorkerTask(
                    item.Name,
                    command: ComposeDemoPath(item.LocalPath),
-                   argument: item.GetTaskArgument(taskConfig)
+                   arguments: item.Arguments
                );
         }
 
         // Demo
-        static string ComposeDemoPath(string localPath) =>
+        private static string ComposeDemoPath(string localPath) =>
             Path.Combine(
                     AppDomain.CurrentDomain.BaseDirectory,
-                    @"..\..\..\Mock2\bin\Debug\",
+                    @"..\..\..\..\\Mock\bin\Debug\",
                     localPath
                 );
     }
 }
-
