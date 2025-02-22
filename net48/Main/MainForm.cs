@@ -1,8 +1,11 @@
 using A.TaskDispatching;
 using A.UI.Service;
 
+using Serilog;
+
 using System;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -33,6 +36,8 @@ namespace A.UI
 
         private async Task ExecuteAsync()
         {
+            Log.Information("[Main {ProcessId}] Tasks started...", Process.GetCurrentProcess().Id);
+
             DateTime now = DateTime.Today + new TimeSpan(12, 59, 40);
             MinashiDateTime.Offset = now - DateTime.Now;
 
@@ -52,6 +57,8 @@ namespace A.UI
             btnExecute.Enabled = false;
 
             await dispatcher.ExecuteAsync();
+
+            Log.Information("[Main {ProcessId}] Tasks completed.", Process.GetCurrentProcess().Id);
         }
 
         private void OnSessionDataReceived(object sender, SessionDataReceivedEventArgs e)

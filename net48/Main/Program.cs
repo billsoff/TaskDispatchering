@@ -1,3 +1,5 @@
+using A.UI.Service;
+
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -15,10 +17,13 @@ namespace A.UI
         static void Main()
         {
             _ = Task.Run(StartProcess);
+            LogService.LoadConfiguration();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainForm());
+
+            LogService.Close();
         }
 
         private static void StartProcess()
