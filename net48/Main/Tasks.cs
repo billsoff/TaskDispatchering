@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -523,6 +524,127 @@ namespace A.TaskDispatching
         private void OnTaskProgressReported(object sender, SchedulerTaskProgressReportedEventArgs e)
         {
             TaskProgressReported?.Invoke(this, e);
+        }
+    }
+
+    public static class ReportBuilder
+    {
+        public static string Build(TaskDispatcher dispatcher, string config)
+        {
+            try
+            {
+                StringWriter writer = new StringWriter();
+
+                writer.WriteLine();
+                GenerateTestResults(dispatcher, config, writer);
+
+                return writer.ToString();
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
+        }
+
+        private static void GenerateTestResults(TaskDispatcher Dispatcher, string Config, TextWriter writer)
+        {
+            string ruler = string.Empty.PadRight(80, '-');
+
+            writer.WriteLine(Config);
+            writer.WriteLine();
+
+            OutputSchedulerTasks(Dispatcher, writer);
+
+            writer.WriteLine(ruler);
+            writer.WriteLine();
+        }
+
+        private static void OutputSchedulerTasks(TaskDispatcher dispatcher, TextWriter writer)
+        {
+            OutputSummary(dispatcher, writer);
+            OutputDetail(dispatcher, writer);
+        }
+
+        private static void OutputSummary(TaskDispatcher dispatcher, TextWriter writer)
+        {
+            IList<string> log;
+            string ruler = string.Empty.PadRight(140, '-');
+
+            writer.WriteLine(ruler);
+
+            foreach (CompositeSchedulerTask schedulerTask in dispatcher.TaskQueue.Cast<CompositeSchedulerTask>())
+            {
+                for (int i = 0; i < schedulerTask.PrimitiveSchedulerTasks.Count; i++)
+                {
+                    if (i != 0)
+                    {
+                        writer.Write("  ");
+                    }
+
+                    PrimitiveSchedulerTask primitive = schedulerTask.PrimitiveSchedulerTasks[i];
+                    log = primitive.Log;
+
+                    writer.Write(
+                            "{0}. {1} {2:HH:mm:ss} created. {3}",
+                            primitive.Number,
+                            primitive.Name,
+                            primitive.CreationTime,
+                            primitive.Status.GetDisplayName()
+                        );
+
+                    if (log.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    if (log.Count >= 1)
+                    {
+                        writer.Write(" ({0} - ", primitive.Log[0].Substring(0, 8));
+                    }
+
+                    if (log.Count >= 2)
+                    {
+                        writer.Write("{0})", primitive.Log[primitive.Log.Count - 1].Substring(0, 8));
+                    }
+                    else if (log.Count >= 1)
+                    {
+                        writer.Write(")");
+                    }
+                }
+
+                writer.WriteLine();
+            }
+
+            writer.WriteLine(ruler);
+            writer.WriteLine();
+        }
+
+        private static void OutputDetail(TaskDispatcher dispatcher, TextWriter writer)
+        {
+            string ruler = string.Empty.PadRight(30, '-');
+
+            foreach (PrimitiveSchedulerTask schedulerTask in dispatcher.PrimitiveTasks)
+            {
+                writer.WriteLine(
+                        "{0}. {1} {2}",
+                        schedulerTask.Number,
+                        schedulerTask.Name,
+                        schedulerTask.Status.GetDisplayName()
+                    );
+                writer.WriteLine(ruler);
+
+                foreach (string log in schedulerTask.Log)
+                {
+                    writer.WriteLine(log);
+                }
+
+                if (schedulerTask.Log.Count != 0)
+                {
+                    writer.WriteLine(ruler);
+                }
+
+                writer.WriteLine();
+            }
         }
     }
 }

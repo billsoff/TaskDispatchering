@@ -36,10 +36,8 @@ namespace A.UI
 
         private async Task ExecuteAsync()
         {
-            Log.Information("[Main {ProcessId}] Tasks started...", Process.GetCurrentProcess().Id);
-
-            DateTime now = DateTime.Today + new TimeSpan(12, 59, 40);
-            MinashiDateTime.Offset = now - DateTime.Now;
+            int processId = Process.GetCurrentProcess().Id;
+            Log.Information("[Main {ProcessId}] Tasks started...", processId);
 
             TaskConfig taskConfig = LoadTaskConfig();
             TaskDispatcher dispatcher = taskConfig.BuildTaskDispatcher();
@@ -58,7 +56,12 @@ namespace A.UI
 
             await dispatcher.ExecuteAsync();
 
-            Log.Information("[Main {ProcessId}] Tasks completed.", Process.GetCurrentProcess().Id);
+            Log.Information("[Main {ProcessId}] Tasks completed.", processId);
+            Log.Information(
+                    "[Main {ProcessId}] Task execution report:{Report}",
+                    processId,
+                    ReportBuilder.Build(dispatcher, ReadTaskConfig())
+                );
         }
 
         private void OnSessionDataReceived(object sender, SessionDataReceivedEventArgs e)
@@ -184,6 +187,14 @@ namespace A.UI
             StreamReader reader = new StreamReader(path);
 
             return TaskConfig.Load(reader);
+        }
+
+        private static string ReadTaskConfig()
+        {
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Service\\parma.xml");
+            StreamReader reader = new StreamReader(path);
+
+            return reader.ReadToEnd();
         }
     }
 }

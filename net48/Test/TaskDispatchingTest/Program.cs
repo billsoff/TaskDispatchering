@@ -115,13 +115,13 @@ namespace TaskDispatchingTest
             }
         }
 
-        static void OutputSchedulerTasks(TaskDispatcher dispatcher, StreamWriter writer)
+        private static void OutputSchedulerTasks(TaskDispatcher dispatcher, StreamWriter writer)
         {
             OutputSummary(dispatcher, writer);
             OutputDetail(dispatcher, writer);
         }
 
-        static void OutputSummary(TaskDispatcher dispatcher, StreamWriter writer)
+        private static void OutputSummary(TaskDispatcher dispatcher, StreamWriter writer)
         {
             IList<string> log;
             string ruler = string.Empty.PadRight(140, '-');
@@ -175,7 +175,7 @@ namespace TaskDispatchingTest
             writer.WriteLine();
         }
 
-        static void OutputDetail(TaskDispatcher dispatcher, StreamWriter writer)
+        private static void OutputDetail(TaskDispatcher dispatcher, StreamWriter writer)
         {
             string ruler = string.Empty.PadRight(30, '-');
 
