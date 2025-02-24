@@ -36,20 +36,24 @@ namespace A.UI.Service
                 // 当本条任务需要等待前一条任务时，生成一个组. 第一条不参与分组
                 if (runOnPreviousCompleted)
                 {
-                    // 需要等待的。 ref内部修改会传到外部
-                    taskQueue.Add(BuildGroup(ref group));
+                    // 创建并行任务
+                    taskQueue.Add(BuildGroup(group));
+
+                    // 创建一个新的组
+                    group = new List<PrimitiveSchedulerTask>();
                 }
 
                 group.Add(primitiveTask);
                 runOnPreviousCompleted = item.RunNextOnCompleted;
             }
+
             // 最后一组
-            taskQueue.Add(BuildGroup(ref group));
+            taskQueue.Add(BuildGroup(group));
 
             return new TaskDispatcher(taskQueue, primitiveTasks);
         }
 
-        private static SchedulerTask BuildGroup(ref List<PrimitiveSchedulerTask> group)
+        private static SchedulerTask BuildGroup(List<PrimitiveSchedulerTask> group)
         {
             group[0].Delay = TimeSpan.FromSeconds(2);
 
@@ -60,9 +64,6 @@ namespace A.UI.Service
             }
 
             SchedulerTask schedulerTask = new ParallelCompositeSchedulerTask(group);
-
-            // 创建一个新的组
-            group = new List<PrimitiveSchedulerTask>();
 
             return schedulerTask;
         }

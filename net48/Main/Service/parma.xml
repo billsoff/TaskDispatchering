@@ -2,7 +2,7 @@
 <root>
   <shopRow memoryMappedFileName="hello" serverUrl="https://myshop.com" installType="1" storeNo="34621" regNo="658" />
   <tasks>
-    <task name="A" number="1" runNextOnCompleted="false" runNextOnFailed ="false" localPath="Mock2.exe" specifiedTime="0930" intervalTime="2" />
+    <task name="A" number="1" runNextOnCompleted="true" runNextOnFailed ="false" localPath="Mock2.exe" specifiedTime="0930" intervalTime="2" />
     <task name="B" number="2" runNextOnCompleted="false" runNextOnFailed ="false" localPath="Mock2.exe" specifiedTime="1022" intervalTime="3" />
     <task name="C" number="3" runNextOnCompleted="false" runNextOnFailed ="true" localPath="Mock2.exe" specifiedTime="1030" intervalTime="4" />
     <task name="D" number="4" runNextOnCompleted="false" runNextOnFailed ="false" localPath="Mock2.exe" specifiedTime="1115" intervalTime="5" />
