@@ -97,13 +97,12 @@ namespace A.UI.Service
             try
             {
                 _mappedFile = MemoryMappedFile.OpenExisting(_mapName);
-
-                return true;
             }
             catch (FileNotFoundException)
             {
-                return false;
             }
+
+            return _mappedFile != null;
         }
 
         private string Receive(string oldData)
