@@ -109,9 +109,21 @@ namespace A.TaskDispatching
         public async Task WaitStartedAsync(int waitStartedTimeoutSeconds)
         {
             Task waitTask = WaitStartedAsync();
-            Task timeoutTask = Task.Delay(TimeSpan.FromSeconds(waitStartedTimeoutSeconds));
+            Task timeoutTask = waitStartedTimeoutSeconds > 0
+                               ? Task.Delay(TimeSpan.FromSeconds(waitStartedTimeoutSeconds))
+                               : null ;
 
-            Task task = await Task.WhenAny(waitTask, timeoutTask);
+            List<Task> tasks = new List<Task>
+            {
+                waitTask,
+            };
+
+            if (timeoutTask != null)
+            {
+                tasks.Add(timeoutTask);
+            }
+
+            Task task = await Task.WhenAny(tasks);
 
             if (task == timeoutTask)
             {

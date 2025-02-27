@@ -63,7 +63,7 @@ namespace A.UI.Service
         private static PrimitiveSchedulerTask BuildTask(TaskItem item, TaskConfig taskConfig)
         {
             return ConstructWorker(item, taskConfig)
-                   .ArrangeScheduler(item.Number, item.RunNextOnFailed, item, waitStartedTimeoutSecond: 10);
+                   .ArrangeScheduler(item.Number, item.RunNextOnFailed, item, waitStartedTimeoutSecond: -1);
         }
 
         private static WorkerTask ConstructWorker(TaskItem item, TaskConfig taskConfig)
