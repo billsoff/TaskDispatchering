@@ -39,7 +39,7 @@ namespace A.TaskDispatchingTest
 
         public override void Execute()
         {
-            OnStarting(new TaskStartingEventArgs(MinashiDateTime.Now));
+            OnStarting(new TaskEventArgs(MinashiDateTime.Now));
             StartProcess();
             OnCompleted(
                     new TaskCompletedEventArgs(
@@ -67,6 +67,9 @@ namespace A.TaskDispatchingTest
             process.ErrorDataReceived += OnProcessErrorDataReceived;
 
             bool success = process.Start();
+
+            NotifyStarted();
+            OnStarted(new TaskEventArgs(MinashiDateTime.Now));
 
             if (!success)
             {

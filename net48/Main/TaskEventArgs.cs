@@ -6,7 +6,7 @@ namespace A.TaskDispatching
     /// 工作任务事件参数
     /// </summary>
     /// <param name="timestamp"></param>
-    public abstract class TaskEventArgs : EventArgs
+    public class TaskEventArgs : EventArgs
     {
         public TaskEventArgs(DateTimeOffset timestamp)
         {
@@ -14,17 +14,6 @@ namespace A.TaskDispatching
         }
 
         public DateTimeOffset Timestamp { get; }
-    }
-
-    /// <summary>
-    /// 工作任务启动事件参数。
-    /// </summary>
-    /// <param name="timestamp"></param>
-    public sealed class TaskStartingEventArgs : TaskEventArgs
-    {
-        public TaskStartingEventArgs(DateTimeOffset timestamp) : base(timestamp)
-        {
-        }
     }
 
     /// <summary>

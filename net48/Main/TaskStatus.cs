@@ -13,9 +13,14 @@ namespace A.TaskDispatching
         Waiting,
 
         /// <summary>
-        /// 実行中
+        /// 起動開始
         /// </summary>
-        Running,
+        Starting,
+
+        /// <summary>
+        /// 起動完了
+        /// </summary>
+        Started,
 
         /// <summary>
         /// 正常終了
@@ -48,8 +53,11 @@ namespace A.TaskDispatching
                 case SchedulerTaskStatus.Waiting:
                     return "待機";
 
-                case SchedulerTaskStatus.Running:
-                    return "実行中";
+                case SchedulerTaskStatus.Starting:
+                    return "起動開始";
+
+                case SchedulerTaskStatus.Started:
+                    return "起動完了";
 
                 case SchedulerTaskStatus.Succeeded:
                     return "正常終了";

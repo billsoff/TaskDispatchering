@@ -42,7 +42,7 @@ namespace A.UI.Service
 
         public override void Execute()
         {
-            OnStarting(new TaskStartingEventArgs(MinashiDateTime.Now));
+            OnStarting(new TaskEventArgs(MinashiDateTime.Now));
             StartProcess();
             OnCompleted(
                     new TaskCompletedEventArgs(
@@ -54,6 +54,9 @@ namespace A.UI.Service
 
         private void StartProcess()
         {
+            int processId = Process.GetCurrentProcess().Id;
+            Log.Information("[Main {ProcessId}] Task {TaskName} starting.", processId, Name);
+
             Process process = new Process();
             ProcessStartInfo startInfo = process.StartInfo;
 
@@ -71,9 +74,9 @@ namespace A.UI.Service
 
             bool success = process.Start();
 
-            OnStarted();
+            NotifyStarted();
+            OnStarted(new TaskEventArgs(MinashiDateTime.Now));
 
-            int processId = Process.GetCurrentProcess().Id;
             Log.Information("[Main {ProcessId}] Task {TaskName} started.", processId, Name);
 
             if (!success)

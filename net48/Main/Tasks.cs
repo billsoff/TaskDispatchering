@@ -46,9 +46,14 @@ namespace A.TaskDispatching
         Task WaitStartedAsync(int waitStartedTimeoutSeconds);
 
         /// <summary>
-        /// 启动事件
+        /// 开始启动事件
         /// </summary>
-        event EventHandler<TaskStartingEventArgs> Starting;
+        event EventHandler<TaskEventArgs> Starting;
+
+        /// <summary>
+        /// 完成启动事件
+        /// </summary>
+        event EventHandler<TaskEventArgs> Started;
 
         /// <summary>
         /// 状态报告事件
@@ -67,7 +72,8 @@ namespace A.TaskDispatching
 
         public DateTimeOffset CreationTime { get; set; } = MinashiDateTime.Now;
 
-        public event EventHandler<TaskStartingEventArgs> Starting;
+        public event EventHandler<TaskEventArgs> Starting;
+        public event EventHandler<TaskEventArgs> Started;
         public event EventHandler<TaskReportStatusEventArgs> ReportStatus;
         public event EventHandler<TaskCompletedEventArgs> Completed;
 
@@ -78,9 +84,14 @@ namespace A.TaskDispatching
             return Task.Factory.StartNew(() => Execute());
         }
 
-        protected virtual void OnStarting(TaskStartingEventArgs e)
+        protected virtual void OnStarting(TaskEventArgs e)
         {
             Starting?.Invoke(this, e);
+        }
+
+        protected virtual void OnStarted(TaskEventArgs e)
+        {
+            Started?.Invoke(this, e);
         }
 
         protected virtual void OnReportStatus(TaskReportStatusEventArgs e)
@@ -121,12 +132,12 @@ namespace A.TaskDispatching
                         return;
                     }
 
-                    await Task.Delay(1000); // Wait one second
+                    await Task.Delay(1000); // Wait 3s
                 }
             }
         }
 
-        protected void OnStarted()
+        protected void NotifyStarted()
         {
             _taskWaitStartedTokeSource.Cancel();
         }
@@ -256,6 +267,7 @@ namespace A.TaskDispatching
             RunNextOnFailed = runNextOnFailed;
 
             task.Starting += OnWorkerStarting;
+            task.Started += OnWorkerStarted;
             task.ReportStatus += OnTaskReportStatus;
             task.Completed += OnWorkerCompleted;
         }
@@ -389,10 +401,16 @@ namespace A.TaskDispatching
         public override string ToString() => Name;
 
         // WorkerTask 事件传递到外部
-        private void OnWorkerStarting(object sender, TaskStartingEventArgs e)
+        private void OnWorkerStarting(object sender, TaskEventArgs e)
         {
             Log.Add(BuildLog(e.Timestamp, "Starting..."));
-            ChangeStatus(SchedulerTaskStatus.Running, e.Timestamp);
+            ChangeStatus(SchedulerTaskStatus.Starting, e.Timestamp);
+        }
+
+        private void OnWorkerStarted(object sender, TaskEventArgs e)
+        {
+            Log.Add(BuildLog(e.Timestamp, "Started..."));
+            ChangeStatus(SchedulerTaskStatus.Started, e.Timestamp);
         }
 
         private void OnTaskReportStatus(object sender, TaskReportStatusEventArgs e)
