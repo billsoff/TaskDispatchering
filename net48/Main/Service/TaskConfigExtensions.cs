@@ -55,14 +55,6 @@ namespace A.UI.Service
 
         private static SchedulerTask BuildGroup(List<PrimitiveSchedulerTask> group)
         {
-            group[0].Delay = TimeSpan.FromSeconds(2);
-
-            for (int i = 1; i < group.Count; i++)
-            {
-                // 后续任务延迟 5 秒启动
-                group[i].Delay = TimeSpan.FromSeconds(5 * i);
-            }
-
             SchedulerTask schedulerTask = new ParallelCompositeSchedulerTask(group);
 
             return schedulerTask;
@@ -70,7 +62,8 @@ namespace A.UI.Service
 
         private static PrimitiveSchedulerTask BuildTask(TaskItem item, TaskConfig taskConfig)
         {
-            return ConstructWorker(item, taskConfig).ArrangeScheduler(item.Number, item.RunNextOnFailed, item);
+            return ConstructWorker(item, taskConfig)
+                   .ArrangeScheduler(item.Number, item.RunNextOnFailed, item, waitStartedTimeoutSecond: 10);
         }
 
         private static WorkerTask ConstructWorker(TaskItem item, TaskConfig taskConfig)

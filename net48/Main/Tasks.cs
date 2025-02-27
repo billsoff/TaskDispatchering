@@ -1,9 +1,13 @@
 ﻿using A.UI.Service;
 
+using Serilog;
+
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace A.TaskDispatching
@@ -33,6 +37,13 @@ namespace A.TaskDispatching
         /// </summary>
         /// <returns></returns>
         Task ExecuteAsync();
+
+        /// <summary>
+        /// 用于等待任务启动。
+        /// </summary>
+        /// <param name="waitStartedTimeoutSeconds">等待超时时间</param>
+        /// <returns></returns>
+        Task WaitStartedAsync(int waitStartedTimeoutSeconds);
 
         /// <summary>
         /// 启动事件
@@ -81,6 +92,44 @@ namespace A.TaskDispatching
         {
             Completed?.Invoke(this, e);
         }
+
+        private readonly CancellationTokenSource _taskWaitStartedTokeSource = new CancellationTokenSource();
+
+        public async Task WaitStartedAsync(int waitStartedTimeoutSeconds)
+        {
+            Task waitTask = WaitStartedAsync();
+            Task timeoutTask = Task.Delay(TimeSpan.FromSeconds(waitStartedTimeoutSeconds));
+
+            Task task = await Task.WhenAny(waitTask, timeoutTask);
+
+            if (task == timeoutTask)
+            {
+                _taskWaitStartedTokeSource.Cancel();
+
+                int processId = Process.GetCurrentProcess().Id;
+                Log.Information("[Main {ProcessId}] Wait task {TaskName} started timeout.", processId, Name);
+            }
+
+            async Task WaitStartedAsync()
+            {
+                CancellationToken onStartedToken = _taskWaitStartedTokeSource.Token;
+
+                while (true)
+                {
+                    if (onStartedToken.IsCancellationRequested)
+                    {
+                        return;
+                    }
+
+                    await Task.Delay(1000); // Wait one second
+                }
+            }
+        }
+
+        protected void OnStarted()
+        {
+            _taskWaitStartedTokeSource.Cancel();
+        }
     }
 
     public static class TaskExtensions
@@ -96,14 +145,16 @@ namespace A.TaskDispatching
                 this ITask worker,
                 int number,
                 bool runNextOnFailed,
-                TaskItem configuration
+                TaskItem configuration,
+                int waitStartedTimeoutSecond = 10
             )
         {
             return new PrimitiveSchedulerTask(
                     worker,
                     number,
                     runNextOnFailed,
-                    configuration
+                    configuration,
+                    waitStartedTimeoutSecond
                 );
         }
     }
@@ -136,6 +187,11 @@ namespace A.TaskDispatching
         /// 获取任务状态。
         /// </summary>
         public abstract SchedulerTaskStatus Status { get; }
+
+        /// <summary>
+        /// 用于等待任务启动。
+        /// </summary>
+        public Task CanStartNextTask { get; protected set; }
 
         /// <summary>
         /// 用于决定当本条任务失败时，下条任务是否执行（只有当下条任务等待时才有效）。
@@ -188,12 +244,13 @@ namespace A.TaskDispatching
     /// </summary>
     public class PrimitiveSchedulerTask : SchedulerTask
     {
-        public PrimitiveSchedulerTask(ITask task, int number, bool runNextOnFailed, TaskItem configuration)
+        public PrimitiveSchedulerTask(ITask task, int number, bool runNextOnFailed, TaskItem configuration, int waitStartedTimeoutSecond = 10)
         {
             Worker = task;
             CreationTime = task.CreationTime;
 
             Configuration = configuration;
+            WaitStartedTimeoutSecond = waitStartedTimeoutSecond;
 
             Number = number;
             RunNextOnFailed = runNextOnFailed;
@@ -232,6 +289,11 @@ namespace A.TaskDispatching
         /// 工作任务创建时间
         /// </summary>
         public DateTimeOffset CreationTime { get; }
+
+        /// <summary>
+        /// 等待任务启动超时时间。
+        /// </summary>
+        public int WaitStartedTimeoutSecond { get; }
 
         /// <summary>
         /// 延迟
@@ -281,23 +343,30 @@ namespace A.TaskDispatching
         /// 异步执行任务。
         /// </summary>
         /// <returns></returns>
-        public async Task ExecuteAsync()
+        public Task ExecuteAsync()
         {
-            if (Delay > TimeSpan.Zero)
-            {
-                await Task.Delay(Delay);
-            }
+            CanStartNextTask = Worker.WaitStartedAsync(WaitStartedTimeoutSecond);
 
-            try
-            {
-                await Worker.ExecuteAsync();
-            }
-            catch (Exception ex)
-            {
-                DateTimeOffset timestamp = MinashiDateTime.Now;
-                Error = ex;
+            return DoExecuteAsync();
 
-                ChangeStatus(SchedulerTaskStatus.Failed, timestamp);
+            async Task DoExecuteAsync()
+            {
+                if (Delay > TimeSpan.Zero)
+                {
+                    await Task.Delay(Delay);
+                }
+
+                try
+                {
+                    await Worker.ExecuteAsync();
+                }
+                catch (Exception ex)
+                {
+                    DateTimeOffset timestamp = MinashiDateTime.Now;
+                    Error = ex;
+
+                    ChangeStatus(SchedulerTaskStatus.Failed, timestamp);
+                }
             }
         }
 
@@ -414,13 +483,21 @@ namespace A.TaskDispatching
         /// </summary>
         /// <param name="remainderTaskCollector"></param>
         /// <returns></returns>
-        public override Task ExecuteAsync(List<Task> remainderTaskCollector)
+        public override async Task ExecuteAsync(List<Task> remainderTaskCollector)
         {
-            List<Task> all = PrimitiveSchedulerTasks.Select(t => t.ExecuteAsync()).ToList();
+            List<Task> all = new List<Task>();
+
+            foreach (PrimitiveSchedulerTask schedulerTask in PrimitiveSchedulerTasks)
+            {
+                all.Add(schedulerTask.ExecuteAsync());
+                await schedulerTask.CanStartNextTask;
+            }
 
             remainderTaskCollector.AddRange(all.Where((_, index) => index < all.Count - 1));
 
-            return all[all.Count - 1];
+            CanStartNextTask = all[all.Count - 1];
+
+            await CanStartNextTask;
         }
 
         /// <summary>
@@ -508,6 +585,7 @@ namespace A.TaskDispatching
                 }
 
                 await schedulerTask.ExecuteAsync(allRemainderTasks);
+
                 canRunNext = schedulerTask.CanRunNext();
             }
 

@@ -1,5 +1,7 @@
 ﻿using A.TaskDispatching;
 
+using Serilog;
+
 using System;
 using System.Diagnostics;
 using System.Text;
@@ -68,6 +70,11 @@ namespace A.UI.Service
             process.ErrorDataReceived += OnProcessErrorDataReceived;
 
             bool success = process.Start();
+
+            OnStarted();
+
+            int processId = Process.GetCurrentProcess().Id;
+            Log.Information("[Main {ProcessId}] Task {TaskName} started.", processId, Name);
 
             if (!success)
             {
