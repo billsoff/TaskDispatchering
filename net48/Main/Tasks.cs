@@ -465,6 +465,15 @@ namespace A.TaskDispatching
             _status = status;
 
             TaskStatusChanged?.Invoke(this, new SchedulerTaskStatusChangedEventArgs(timestamp, this));
+
+            int processId = Process.GetCurrentProcess().Id;
+            Serilog.Log.Information(
+                    "[Task {Name} {ProcessId}] Status change to {Status} - {StatusDisplayName}.",
+                    Name,
+                    processId,
+                    status,
+                    status.GetDisplayName()
+                );
         }
 
         private static string BuildLog(DateTimeOffset timestamp, string message) =>
