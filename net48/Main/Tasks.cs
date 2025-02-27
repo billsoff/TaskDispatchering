@@ -214,7 +214,7 @@ namespace A.TaskDispatching
         /// <summary>
         /// 用于等待任务启动。
         /// </summary>
-        public Task CanStartNextTask { get; protected set; }
+        public Task CanStartNextTask { get; protected set; } = Task.CompletedTask;
 
         /// <summary>
         /// 用于决定当本条任务失败时，下条任务是否执行（只有当下条任务等待时才有效）。
