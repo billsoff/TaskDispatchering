@@ -378,6 +378,9 @@ namespace A.TaskDispatching
                     Error = ex;
 
                     ChangeStatus(SchedulerTaskStatus.Failed, timestamp);
+
+                    int processId = Process.GetCurrentProcess().Id;
+                    Serilog.Log.Information("[Main {ProcessId}] Task {TaskName} failed.", processId, Name);
                 }
             }
         }
@@ -388,12 +391,15 @@ namespace A.TaskDispatching
         /// <returns></returns>
         public override bool Pending()
         {
+            int processId = Process.GetCurrentProcess().Id;
             if (Status != SchedulerTaskStatus.Waiting)
             {
                 return false;
             }
 
             ChangeStatus(SchedulerTaskStatus.Pending);
+
+            Serilog.Log.Information("[Main {ProcessId}] Task {TaskName} canceled.", processId, Name);
 
             return true;
         }
@@ -422,14 +428,18 @@ namespace A.TaskDispatching
         private void OnWorkerCompleted(object sender, TaskCompletedEventArgs e)
         {
             _errorMessage = e.ErrorMessage;
+            string completedStatus = e.Success ? "Succeeded" : $"Failed: {e.ErrorMessage}";
 
             Log.Add(
                     BuildLog(
                             e.Timestamp,
-                            e.Success ? "Succeeded" : $"Failed: {e.ErrorMessage}"
+                            completedStatus
                         )
                 );
             ChangeStatus(e.Success ? SchedulerTaskStatus.Succeeded : SchedulerTaskStatus.Failed, e.Timestamp);
+
+            int processId = Process.GetCurrentProcess().Id;
+            Serilog.Log.Information("[Main {ProcessId}] Task {TaskName} {completedStatus}.", processId, Name, completedStatus);
         }
 
         private void ChangeStatus(SchedulerTaskStatus status, DateTimeOffset timestamp = default)
