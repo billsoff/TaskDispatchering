@@ -132,7 +132,7 @@ namespace A.TaskDispatching
                         return;
                     }
 
-                    await Task.Delay(1000); // Wait 3s
+                    await Task.Delay(1000); // Wait 1s
                 }
             }
         }
