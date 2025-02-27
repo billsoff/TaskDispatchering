@@ -111,7 +111,7 @@ namespace A.TaskDispatching
             Task waitTask = WaitStartedAsync();
             Task timeoutTask = waitStartedTimeoutSeconds > 0
                                ? Task.Delay(TimeSpan.FromSeconds(waitStartedTimeoutSeconds))
-                               : null ;
+                               : null;
 
             List<Task> tasks = new List<Task>
             {
@@ -372,6 +372,7 @@ namespace A.TaskDispatching
             CanStartNextTask = Worker.WaitStartedAsync(WaitStartedTimeoutSecond);
 
             return DoExecuteAsync();
+
 
             async Task DoExecuteAsync()
             {
