@@ -142,7 +142,7 @@ namespace A.UI.Service
             }
 
             // Mock
-            if (_mockError != null)
+            if (_mockError == true)
             {
                 args.Add("mockError", _mockError.ToString());
             }
