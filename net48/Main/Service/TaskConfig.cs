@@ -141,8 +141,27 @@ namespace A.UI.Service
                 args.Add(p.Name, (string)p.GetValue(this));
             }
 
+            // Mock
+            if (_mockError != null)
+            {
+                args.Add("mockError", _mockError.ToString());
+            }
+
             return args;
         }
+
+        #region Used in mock
+
+        [XmlAttribute("mockError")]
+        public bool MockError
+        {
+            get => _mockError ?? false;
+            set => _mockError = value;
+        }
+
+        private bool? _mockError;
+
+        #endregion
 
         public override string ToString() => Name;
     }
