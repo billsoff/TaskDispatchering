@@ -4,6 +4,8 @@ using System.IO.MemoryMappedFiles;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Serilog;
+
 namespace A.UI.Service
 {
     public sealed class IpcReceiveSession : IDisposable
@@ -39,15 +41,29 @@ namespace A.UI.Service
         public async Task<bool> OpenSessionAsync()
         {
             CancellationToken token = _cancellationTokenSource.Token;
+
             Console.Write("Try open session {0}...  ", _mapName);
+            Log.Information("[IPC] Try open session {SessionName}...", _mapName);
 
             while (true)
             {
-                bool success = OpenSession();
+                bool success;
+
+                try
+                {
+                    success = OpenSession();
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "[IPC] Open session {SessionName} failed", _mapName);
+
+                    throw;
+                }
 
                 if (success)
                 {
                     Console.WriteLine("OK. Session {0} opened.", _mapName);
+                    Log.Information("[IPC] Open session {SessionName} succeeded", _mapName);
 
                     return true;
                 }
@@ -61,6 +77,7 @@ namespace A.UI.Service
             }
 
             Console.WriteLine("Canceled.");
+            Log.Information("[IPC] Open session {SessionName} canceled", _mapName);
 
             return false;
         }
@@ -69,6 +86,8 @@ namespace A.UI.Service
         {
             if (_mappedFile == null)
             {
+                Log.Error("[IPC] Cannot receiving data because session {SessionName} is not opened", _mapName);
+
                 throw new InvalidOperationException("Please open session first.");
             }
 
@@ -76,10 +95,20 @@ namespace A.UI.Service
             string oldData = null;
 
             Console.WriteLine("Start receiving data...");
+            Log.Information("[IPC] Start receiving data from session {SessionName}...", _mapName);
 
             while (true)
             {
-                oldData = Receive(oldData);
+                try
+                {
+                    oldData = Receive(oldData);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "[IPC] Session {SessionName} is terminated because receiving data failed", _mapName);
+
+                    throw;
+                }
 
                 if (token.IsCancellationRequested)
                 {
@@ -90,6 +119,9 @@ namespace A.UI.Service
             }
 
             Console.WriteLine("End receiving data.");
+
+            Log.Information("[IPC] Session {SessionName} is closed", _mapName);
+            Log.Information("[IPC] End receiving data from {SessionName}", _mapName);
         }
 
         private bool OpenSession()
@@ -113,6 +145,8 @@ namespace A.UI.Service
 
                 if (!string.IsNullOrWhiteSpace(newData) && newData != oldData)
                 {
+                    Log.Information("[IPC] Received data {Data} from session {SessionName}", newData, _mapName);
+
                     DataReceived?.Invoke(this, new SessionDataReceivedEventArgs(newData));
                 }
 
@@ -129,6 +163,8 @@ namespace A.UI.Service
             _mappedFile = null;
 
             GC.SuppressFinalize(this);
+
+            Log.Information("[IPC] Session {SessionName} is disposed", _mapName);
         }
     }
 
