@@ -14,9 +14,8 @@ namespace MessageSenderMock
 
             const int TIMES = 14;
             Random random = new Random();
-            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session.txt");
 
-            IpcSendSession session = new IpcSendSession(filePath, "hello");
+            IpcSendSession session = new IpcSendSession("hello");
 
             for (int i = 0; i < TIMES; i++)
             {
@@ -25,12 +24,11 @@ namespace MessageSenderMock
                 Message message = new Message() { Step = i + 1 };
                 string data = JsonConvert.SerializeObject(message);
 
-                await session.SendAsync(data);
+                session.Send(data);
 
                 Console.WriteLine("Send data: {0}", data);
             }
 
-            await session.SendAsync(string.Empty);
             session.Dispose();
         }
     }

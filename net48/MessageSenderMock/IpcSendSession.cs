@@ -9,44 +9,27 @@ namespace MessageSenderMock
     internal class IpcSendSession : IDisposable
     {
         private readonly MemoryMappedFile _mappedFile;
+        private const int LENGTH = byte.MaxValue + 1;
 
-        public IpcSendSession(string filePath, string mapName)
+        public IpcSendSession(string mapName)
         {
-            _mappedFile = MemoryMappedFile.CreateFromFile(filePath, FileMode.Open, mapName);
+            _mappedFile = MemoryMappedFile.CreateOrOpen(mapName, LENGTH);
         }
 
-        public async Task SendAsync(string data)
+        public void Send(string data)
         {
-            int length = Encoding.UTF8.GetByteCount(data);
-            ClearStream(length);
+            byte[] bytes = Encoding.UTF8.GetBytes(data);
 
-            Stream stream = _mappedFile.CreateViewStream();
-
-            using (StreamWriter writer = new StreamWriter(stream))
+            using (Stream stream = _mappedFile.CreateViewStream())
             {
-                await writer.WriteAsync(data);
+                stream.WriteByte((byte)bytes.Length);
+                stream.Write(bytes, 0, bytes.Length);
             }
         }
 
         public void Dispose()
         {
-            ClearStream();
             _mappedFile.Dispose();
-        }
-
-        private void ClearStream(int dataLength = 252)
-        {
-            Stream stream = _mappedFile.CreateViewStream();
-            byte ZERO = 0;
-            int byteCount = dataLength + 4;
-
-            using (BinaryWriter writer = new BinaryWriter(stream))
-            {
-                for (int i = 0; i < byteCount; i++)
-                {
-                    writer.Write(ZERO);
-                }
-            }
         }
     }
 }
