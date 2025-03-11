@@ -55,7 +55,7 @@ namespace A.TaskDispatchingTest
             ProcessStartInfo startInfo = process.StartInfo;
 
             startInfo.FileName = Command;
-            startInfo.Arguments = Arguments;
+            startInfo.Arguments = $"\"{Arguments.Replace("\"", "\\\"")}\"";
 
             startInfo.CreateNoWindow = true;
             startInfo.UseShellExecute = false;
