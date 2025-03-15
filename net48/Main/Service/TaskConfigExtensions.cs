@@ -77,11 +77,13 @@ namespace A.UI.Service
 
         // Demo
         static string ComposeDemoPath(string localPath) =>
-            Path.Combine(
-                    AppDomain.CurrentDomain.BaseDirectory,
-                    @"..\..\..\Mock2\bin\Debug\",
-                    localPath
-                );
+            localPath.Contains(":")
+            ? localPath
+            : Path.Combine(
+                      AppDomain.CurrentDomain.BaseDirectory,
+                      @"..\..\..\Mock2\bin\Debug\",
+                      localPath
+                  );
     }
 }
 

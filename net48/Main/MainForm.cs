@@ -206,13 +206,31 @@ namespace A.UI
             Process process = new Process();
             ProcessStartInfo startInfo = process.StartInfo;
 
-            startInfo.FileName = Path.Combine(
-                    AppDomain.CurrentDomain.BaseDirectory,
-                    @"..\..\..\MessageSenderMock\bin\Debug\MessageSenderMock.exe"
-                );
+            startInfo.FileName = FindSendSessionMockPath();
 
             process.Start();
             process.WaitForExit();
+        }
+
+        private static string FindSendSessionMockPath()
+        {
+            string[] paths =
+            {
+                @"SendSessionMock\MessageSenderMock.exe",
+                @"..\..\..\MessageSenderMock\bin\Debug\MessageSenderMock.exe",
+            };
+
+            foreach (string path in paths)
+            {
+                string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
+
+                if (File.Exists(fullPath))
+                {
+                    return fullPath;
+                }
+            }
+
+            throw new InvalidOperationException("Send session mock program cannot be found");
         }
     }
 }
