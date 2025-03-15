@@ -18,6 +18,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageSenderMock", "net48\MessageSenderMock\MessageSenderMock.csproj", "{4B98FB81-D95B-47F9-9F64-91EA32EAA31B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Install", "Install", "{50FEBD6C-4193-4A33-BA89-CF5680F197CF}"
+	ProjectSection(SolutionItems) = preProject
+		net48\Install\README.md = net48\Install\README.md
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstallMain", "net48\Install\InstallMain\InstallMain.csproj", "{8DB6155A-8730-4EE1-A6F1-422D07E6D7E1}"
 EndProject
